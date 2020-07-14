@@ -3,7 +3,7 @@
     <div class="container">
       <div class="error">
         <div>
-          <img src="~/assets/images/logo.png" style="max-width: 100px;" />
+          <img src="~/assets/images/logo.svg" style="max-width: 100px;width:1.75rem;" />
         </div>
         <div class="description">
           <span v-if="error.statusCode === 404">{{
@@ -15,9 +15,9 @@
           <span v-else>{{ error.statusCode }} 页面异常</span>
         </div>
         <div class="report">
-          <a href="https://mlog.club/topic/create" target="_blank"
+          <!-- <a href="https://mlog.club/topic/create" target="_blank"
             >点击这里反馈该问题>></a
-          >
+          > -->
         </div>
       </div>
     </div>

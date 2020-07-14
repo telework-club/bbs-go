@@ -7,7 +7,7 @@
     >
       <div class="navbar-brand">
         <div class="navbar-item">
-          <img src="~/assets/images/logo.svg" />
+          <img style="width:1.75rem" src="~/assets/images/logo.svg" />
         </div>
 
         <a
