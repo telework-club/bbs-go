@@ -2,6 +2,7 @@ package avatar
 
 import (
 	"bytes"
+	"fmt"
 	"image"
 	"image/color"
 	"image/png"
@@ -10,8 +11,6 @@ import (
 
 	"github.com/issue9/identicon"
 )
-
-const DefaultAvatar = "https://file.mlog.club/images/default-avatar/default.png"
 
 var (
 	err                   error
@@ -27,7 +26,8 @@ var (
 		"#FF4500", "#FF4040", "#FF3E96", "#FF34B3",
 		"#FF3030", "#FF1493", "#FF00FF", "#FF0000",
 	}
-	identiconIns *identicon.Identicon
+	avatarHostURL string
+	identiconIns  *identicon.Identicon
 )
 
 func init() {
@@ -38,18 +38,29 @@ func init() {
 	identiconIns, _ = identicon.New(300, color.Transparent, avatarFrontColors...)
 }
 
-func Generate(userId int64) ([]byte, error) {
+// DefaultAvatar is for default avatar
+func DefaultAvatar() string {
+	return fmt.Sprintf("%s/images/default-avatar/default.png", avatarHostURL)
+}
+
+// Generate is for generating byte avatar
+func Generate(userID int64) ([]byte, error) {
 	buf := new(bytes.Buffer)
-	img := GenerateAvatar(userId)
+	img := GenerateAvatar(userID)
 	if err = png.Encode(buf, img); err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
 
-// 生成默认头像
-func GenerateAvatar(userId int64) image.Image {
-	return identiconIns.Make([]byte(strconv.FormatInt(userId, 10)))
+// SetAvatarHost 设置default host的url
+func SetAvatarHost(host string) {
+	avatarHostURL = host
+}
+
+// GenerateAvatar 生成默认头像
+func GenerateAvatar(userID int64) image.Image {
+	return identiconIns.Make([]byte(strconv.FormatInt(userID, 10)))
 }
 
 func colorToRGB(colorStr string) (*color.RGBA, error) {
