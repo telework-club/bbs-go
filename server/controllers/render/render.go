@@ -28,7 +28,7 @@ func BuildUserDefaultIfNull(id int64) *model.UserInfo {
 		user = &model.User{}
 		user.Id = id
 		user.Username = simple.SqlNullString(strconv.FormatInt(id, 10))
-		user.Avatar = avatar.DefaultAvatar
+		user.Avatar = avatar.DefaultAvatar()
 		user.CreateTime = simple.NowTimestamp()
 	}
 	return BuildUser(user)
@@ -45,7 +45,7 @@ func BuildUser(user *model.User) *model.UserInfo {
 	}
 	a := user.Avatar
 	if len(a) == 0 {
-		a = avatar.DefaultAvatar
+		a = avatar.DefaultAvatar()
 	}
 	roles := strings.Split(user.Roles, ",")
 	ret := &model.UserInfo{
@@ -73,7 +73,7 @@ func BuildUser(user *model.User) *model.UserInfo {
 	if user.Status == constants.StatusDeleted {
 		ret.Username = "blacklist"
 		ret.Nickname = "黑名单用户"
-		ret.Avatar = avatar.DefaultAvatar
+		ret.Avatar = avatar.DefaultAvatar()
 		ret.Email = ""
 		ret.HomePage = ""
 		ret.Description = ""
@@ -498,7 +498,7 @@ func BuildMessage(message *model.Message) *model.MessageResponse {
 	from := BuildUserDefaultIfNull(message.FromId)
 	if message.FromId <= 0 {
 		from.Nickname = "系统通知"
-		from.Avatar = avatar.DefaultAvatar
+		from.Avatar = avatar.DefaultAvatar()
 	}
 	return &model.MessageResponse{
 		MessageId:    message.Id,

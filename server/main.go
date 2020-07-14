@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"os"
 
 	_ "github.com/jinzhu/gorm/dialects/mysql"
@@ -9,6 +10,7 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"bbs-go/app"
+	"bbs-go/common/avatar"
 	"bbs-go/config"
 	"bbs-go/model"
 )
@@ -32,6 +34,12 @@ func init() {
 	if err := simple.OpenMySql(config.Instance.MySqlUrl, 10, 20, config.Instance.ShowSql, model.Models...); err != nil {
 		logrus.Error(err)
 	}
+	avatar.SetAvatarHost(config.Instance.BaseUrl)
+	if config.Instance.Uploader.Enable == "Local" {
+		config.Instance.Uploader.Local.Path = fmt.Sprintf("%s/%s", config.Instance.StaticPath, config.Instance.Uploader.Local.Path)
+		avatar.SetAvatarHost(config.Instance.Uploader.Local.Host)
+	}
+
 }
 
 func main() {
