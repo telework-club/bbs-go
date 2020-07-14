@@ -23,7 +23,8 @@ WORKDIR /app
 
 # Install dependencies
 COPY package.json* ./
-RUN npm i --registry=https://registry.npm.taobao.org
+RUN npm install -g yarn
+RUN yarn install
 
 FROM builder AS application
 
@@ -31,6 +32,6 @@ FROM builder AS application
 COPY . .
 
 # Build project
-RUN npm run build
+RUN yarn build
 
-CMD ["npm", "run", "start"]
+CMD ["yarn", "start"]

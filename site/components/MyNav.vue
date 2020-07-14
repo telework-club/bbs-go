@@ -8,13 +8,17 @@
     <div class="container">
       <div class="navbar-brand">
         <a href="/" class="navbar-item">
-          <img :alt="config.siteTitle" src="~/assets/images/logo.png" />
+          <img
+            :alt="config.siteTitle"
+            style="width:1.75rem"
+            src="~/assets/images/logo.svg"
+          />
         </a>
         <a
           :class="{ 'is-active': navbarActive }"
-          @click="toggleNav"
           class="navbar-burger burger"
           data-target="navbarBasic"
+          @click="toggleNav"
         >
           <span aria-hidden="true" />
           <span aria-hidden="true" />
@@ -85,7 +89,7 @@
               <a v-if="isOwnerOrAdmin" class="navbar-item" href="/admin">
                 <i class="iconfont icon-dashboard" />&nbsp;后台管理
               </a>
-              <a @click="signout" class="navbar-item">
+              <a class="navbar-item" @click="signout">
                 <i class="iconfont icon-log-out" />&nbsp;退出登录
               </a>
             </div>

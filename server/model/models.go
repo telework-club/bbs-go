@@ -25,8 +25,8 @@ type User struct {
 	HomePage         string         `gorm:"size:1024" json:"homePage" form:"homePage"`                          // 个人主页
 	Description      string         `gorm:"type:text" json:"description" form:"description"`                    // 个人描述
 	Status           int            `gorm:"index:idx_user_status;not null" json:"status" form:"status"`         // 状态
-	TopicCount       int            `gorm:"not null" json:"topicCount" form:"topicCount"`                       // 帖子数量
-	CommentCount     int            `gorm:"not null" json:"commentCount" form:"commentCount"`                   // 跟帖数量
+	TopicCount       int            `gorm:"not null;default:0" json:"topicCount" form:"topicCount"`             // 帖子数量
+	CommentCount     int            `gorm:"not null;default:0" json:"commentCount" form:"commentCount"`         // 跟帖数量
 	Roles            string         `gorm:"type:text" json:"roles" form:"roles"`                                // 角色
 	Type             int            `gorm:"not null" json:"type" form:"type"`                                   // 用户类型
 	ForbiddenEndTime int64          `gorm:"not null;default:0" json:"forbiddenEndTime" form:"forbiddenEndTime"` // 禁言结束时间

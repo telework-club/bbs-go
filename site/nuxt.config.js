@@ -25,7 +25,7 @@ export default {
       { name: 'window-target', content: '_top' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
       {
         rel: 'alternate',
         type: 'application/atom+xml',
@@ -89,14 +89,14 @@ export default {
     '@nuxtjs/axios',
     '@nuxtjs/eslint-module',
     '@nuxtjs/toast',
-    ['cookie-universal-nuxt', { alias: 'cookies' }],
-    [
-      '@nuxtjs/google-adsense',
-      {
-        id: 'ca-pub-5683711753850351',
-        pageLevelAds: true
-      }
-    ]
+    ['cookie-universal-nuxt', { alias: 'cookies' }]
+    // [
+    //   '@nuxtjs/google-adsense',
+    //   {
+    //     id: 'ca-pub-5683711753850351',
+    //     pageLevelAds: true
+    //   }
+    // ]
   ],
   /*
    ** Axios module configuration

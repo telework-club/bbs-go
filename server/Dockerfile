@@ -1,5 +1,5 @@
 # builder stage
-FROM golang:1.13-stretch AS builder
+FROM golang:1.14-stretch AS builder
 
 # Install build dependencies
 RUN apt-get -qq update && \
@@ -19,7 +19,7 @@ ENV ROOT_DIR=/app
 
 # download and cache go dependencies
 COPY go.* ./
-RUN GOPROXY="https://goproxy.cn" go mod download
+RUN go mod download
 
 COPY . .
 
