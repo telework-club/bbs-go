@@ -3,7 +3,10 @@
     <div class="container">
       <div class="error">
         <div>
-          <img src="~/assets/images/logo.svg" style="max-width: 100px;width:1.75rem;" />
+          <img
+            src="~/assets/images/logo.svg"
+            style="max-width: 100px;width:1.75rem;"
+          />
         </div>
         <div class="description">
           <span v-if="error.statusCode === 404">{{

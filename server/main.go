@@ -35,8 +35,12 @@ func init() {
 		logrus.Error(err)
 	}
 	avatar.SetAvatarHost(config.Instance.BaseUrl)
-	if config.Instance.Uploader.Enable == "Local" {
-		config.Instance.Uploader.Local.Path = fmt.Sprintf("%s/%s", config.Instance.StaticPath, config.Instance.Uploader.Local.Path)
+	if config.Instance.Uploader.Enable == "local" {
+		if len(config.Instance.Uploader.Local.Path) == 0 {
+			config.Instance.Uploader.Local.Path = config.Instance.StaticPath
+		} else {
+			config.Instance.Uploader.Local.Path = fmt.Sprintf("%s/%s", config.Instance.StaticPath, config.Instance.Uploader.Local.Path)
+		}
 		avatar.SetAvatarHost(config.Instance.Uploader.Local.Host)
 	}
 

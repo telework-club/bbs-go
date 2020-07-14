@@ -6,7 +6,10 @@
           style="text-align: center; vertical-align: center; margin-top: 100px;"
         >
           <div>
-            <img src="~/assets/images/logo.svg" style="max-width: 100px;width:1.75rem;" />
+            <img
+              src="~/assets/images/logo.svg"
+              style="max-width: 100px;width:1.75rem;"
+            />
           </div>
           <div style="margin-top: 20px;">
             <a :href="url" rel="nofollow"
