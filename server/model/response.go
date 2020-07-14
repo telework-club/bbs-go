@@ -49,7 +49,7 @@ type NodeResponse struct {
 	Description string `json:"description"`
 }
 
-// 帖子列表返回实体
+// TopicSimpleResponse 帖子列表返回实体
 type TopicSimpleResponse struct {
 	TopicId         int64          `json:"topicId"`
 	User            *UserInfo      `json:"user"`
@@ -64,13 +64,13 @@ type TopicSimpleResponse struct {
 	CreateTime      int64          `json:"createTime"`
 }
 
-// 帖子详情返回实体
+// TopicResponse 帖子详情返回实体
 type TopicResponse struct {
 	TopicSimpleResponse
 	Content string `json:"content"`
 }
 
-// 帖子列表返回实体
+// TweetResponse 帖子列表返回实体
 type TweetResponse struct {
 	TweetId      int64       `json:"tweetId"`
 	User         *UserInfo   `json:"user"`
@@ -82,7 +82,7 @@ type TweetResponse struct {
 	CreateTime   int64       `json:"createTime"`
 }
 
-// 项目简单返回
+// ProjectSimpleResponse 项目简单返回
 type ProjectSimpleResponse struct {
 	ProjectId   int64     `json:"projectId"`
 	User        *UserInfo `json:"user"`
@@ -96,7 +96,7 @@ type ProjectSimpleResponse struct {
 	CreateTime  int64     `json:"createTime"`
 }
 
-// 项目详情
+// ProjectResponse 项目详情
 type ProjectResponse struct {
 	ProjectSimpleResponse
 	Content string `json:"content"`
