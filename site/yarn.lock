@@ -1179,6 +1179,13 @@
   resolved "https://registry.npm.taobao.org/@nuxtjs/google-adsense/download/@nuxtjs/google-adsense-1.1.3.tgz#cc8b83616e9cc19d9fb9ae77c7101137da532c16"
   integrity sha1-zIuDYW6cwZ2fua53xxARN9pTLBY=
 
+"@nuxtjs/google-analytics@^2.3.0":
+  version "2.3.0"
+  resolved "https://registry.npm.taobao.org/@nuxtjs/google-analytics/download/@nuxtjs/google-analytics-2.3.0.tgz#d4c900e4bc5b91b23da33e5764d6a9a6236d78fd"
+  integrity sha1-1MkA5LxbkbI9oz5XZNappiNteP0=
+  dependencies:
+    vue-analytics "^5.22.1"
+
 "@nuxtjs/proxy@^2.0.0":
   version "2.0.0"
   resolved "https://registry.npm.taobao.org/@nuxtjs/proxy/download/@nuxtjs/proxy-2.0.0.tgz#cf19894eac721a2ad896293f241371f046db71e7"
@@ -8441,6 +8448,11 @@ vm-browserify@^1.0.1:
   version "1.1.2"
   resolved "https://registry.npm.taobao.org/vm-browserify/download/vm-browserify-1.1.2.tgz?cache=0&sync_timestamp=1572870772154&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fvm-browserify%2Fdownload%2Fvm-browserify-1.1.2.tgz#78641c488b8e6ca91a75f511e7a3b32a86e5dda0"
   integrity sha1-eGQcSIuObKkadfUR56OzKobl3aA=
+
+vue-analytics@^5.22.1:
+  version "5.22.1"
+  resolved "https://registry.npm.taobao.org/vue-analytics/download/vue-analytics-5.22.1.tgz#9d6b32da56daee1b9dfb23a267b50349a03f710f"
+  integrity sha1-nWsy2lba7hud+yOiZ7UDSaA/cQ8=
 
 vue-client-only@^2.0.0:
   version "2.0.0"
