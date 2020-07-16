@@ -21,6 +21,7 @@ func (r *userRepository) Get(db *gorm.DB, id int64) *model.User {
 	if err := db.First(ret, "id = ?", id).Error; err != nil {
 		return nil
 	}
+	ret.Password = ""
 	return ret
 }
 
