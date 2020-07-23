@@ -1,0 +1,14 @@
+language: go
+go:
+- '1.3'
+before_install:
+- openssl aes-256-cbc -K $encrypted_51bbf948f823_key -iv $encrypted_51bbf948f823_iv
+  -in deployer_rsa.enc -out ~/.ssh/id_rsa -d
+- chmod 600 ~/.ssh/id_rsa
+- ssh-keyscan -t ecdsa -H $DEPLOY_HOST 2>&1 | tee -a $HOME/.ssh/known_hosts
+deploy:
+  provider: script
+  script: ssh $DEPLOY_USER@$DEPLOY_HOST "cd /home/deploy/forum-deploy;git pull;./deploy.sh"
+  skip_cleanup: true
+  on: 
+    branch: deploy
