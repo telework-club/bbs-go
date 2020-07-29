@@ -6,6 +6,7 @@ replace github.com/go-check/check => github.com/go-check/check v0.0.0-2018062817
 
 require (
 	github.com/PuerkitoBio/goquery v1.5.0
+	github.com/ahmetb/go-linq v3.0.0+incompatible
 	github.com/ajg/form v1.5.1 // indirect
 	github.com/aliyun/aliyun-oss-go-sdk v2.0.3+incompatible
 	github.com/baiyubin/aliyun-sts-go-sdk v0.0.0-20180326062324-cfa1a18b161f // indirect
