@@ -17,6 +17,7 @@ require (
 	github.com/goburrow/cache v0.1.0
 	github.com/google/go-querystring v1.0.0 // indirect
 	github.com/gorilla/feeds v1.1.1
+	github.com/graphql-go/graphql v0.7.9
 	github.com/ikeikeikeike/go-sitemap-generator/v2 v2.0.2
 	github.com/imkira/go-interpol v1.1.0 // indirect
 	github.com/iris-contrib/middleware/cors v0.0.0-20191219204441-78279b78a367
