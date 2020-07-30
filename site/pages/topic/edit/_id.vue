@@ -66,8 +66,8 @@
                 <a
                   :class="{ 'is-loading': publishing }"
                   :disabled="publishing"
-                  @click="submitCreate"
                   class="button is-success"
+                  @click="submitCreate"
                   >提交更改</a
                 >
               </div>
@@ -98,7 +98,7 @@ export default {
   async asyncData({ $axios, params }) {
     const [topic, nodes] = await Promise.all([
       $axios.get('/api/topic/edit/' + params.id),
-      $axios.get('/api/topic/nodes')
+      $axios.get('/api/topic/nodes/editable')
     ])
     return {
       topic,

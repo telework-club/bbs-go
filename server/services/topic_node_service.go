@@ -2,6 +2,7 @@ package services
 
 import (
 	"bbs-go/model/constants"
+
 	"github.com/mlogclub/simple"
 
 	"bbs-go/model"
@@ -63,4 +64,8 @@ func (s *topicNodeService) Delete(id int64) {
 
 func (s *topicNodeService) GetNodes() []model.TopicNode {
 	return repositories.TopicNodeRepository.Find(simple.DB(), simple.NewSqlCnd().Eq("status", constants.StatusOk).Asc("sort_no").Desc("id"))
+}
+
+func (s *topicNodeService) GetRoleNodes(roles string) []model.TopicNode {
+	return repositories.TopicNodeRepository.FindByRoles(simple.DB(), roles)
 }

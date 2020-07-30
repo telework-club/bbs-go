@@ -522,6 +522,9 @@ func (s *userService) GetRoles() *[]string {
 	var roleList []string
 	roles := repositories.UserRepository.GetAllRoles(simple.DB())
 	for _, role := range *roles {
+		if len(role) == 0 {
+			continue
+		}
 		if strings.Contains(role, ",") {
 			roleList = append(roleList, strings.Split(role, ",")...)
 		} else {

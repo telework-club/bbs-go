@@ -3,10 +3,12 @@ package api
 import (
 	"bbs-go/common"
 	"bbs-go/model/constants"
-	"github.com/dchest/captcha"
 	"math/rand"
 	"strings"
 
+	"github.com/dchest/captcha"
+
+	linq "github.com/ahmetb/go-linq"
 	"github.com/kataras/iris/v12"
 	"github.com/mlogclub/simple"
 
@@ -16,6 +18,19 @@ import (
 	"bbs-go/services"
 )
 
+func checkNodeRole(user *model.User, nodeId int64) bool {
+	topicNode := services.TopicNodeService.Get(nodeId)
+
+	requiredRoles := strings.Split(topicNode.Roles, ",")
+
+	userRoles := strings.Split(user.Roles, ",")
+
+	if len(topicNode.Roles) != 0 && linq.From(requiredRoles).Intersect(linq.From(userRoles)).Count() == 0 {
+		return false
+	}
+	return true
+}
+
 type TopicController struct {
 	Ctx iris.Context
 }
@@ -23,6 +38,13 @@ type TopicController struct {
 // 节点
 func (c *TopicController) GetNodes() *simple.JsonResult {
 	nodes := services.TopicNodeService.GetNodes()
+	return simple.JsonData(render.BuildNodes(nodes))
+}
+
+// Get editable node for a user
+func (c *TopicController) GetNodesEditable() *simple.JsonResult {
+	user := services.UserTokenService.GetCurrent(c.Ctx)
+	nodes := services.TopicNodeService.GetRoleNodes(user.Roles)
 	return simple.JsonData(render.BuildNodes(nodes))
 }
 
@@ -51,6 +73,10 @@ func (c *TopicController) PostCreate() *simple.JsonResult {
 
 	if services.SysConfigService.GetConfig().TopicCaptcha && !captcha.VerifyString(captchaId, captchaCode) {
 		return simple.JsonError(common.CaptchaError)
+	}
+
+	if !checkNodeRole(user, nodeId) {
+		return simple.JsonErrorMsg("无权限")
 	}
 
 	topic, err := services.TopicService.Publish(user.Id, nodeId, tags, title, content)
@@ -116,6 +142,9 @@ func (c *TopicController) PostEditBy(topicId int64) *simple.JsonResult {
 	content := strings.TrimSpace(simple.FormValue(c.Ctx, "content"))
 	tags := simple.FormValueStringArray(c.Ctx, "tags")
 
+	if !checkNodeRole(user, nodeId) {
+		return simple.JsonErrorMsg("无权限")
+	}
 	err := services.TopicService.Edit(topicId, nodeId, tags, title, content)
 	if err != nil {
 		return simple.JsonError(err)
