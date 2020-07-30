@@ -25,6 +25,7 @@
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="id" label="编号"></el-table-column>
       <el-table-column prop="name" label="名称"></el-table-column>
+      <el-table-column prop="roles" label="要求角色"></el-table-column>
       <el-table-column prop="description" label="描述"></el-table-column>
       <el-table-column prop="sortNo" label="排序"></el-table-column>
       <el-table-column prop="status" label="状态">
@@ -70,6 +71,15 @@
         <el-form-item label="名称">
           <el-input v-model="addForm.name"></el-input>
         </el-form-item>
+        <el-form-item label="角色">
+          <el-select v-model="addForm.roles" multiple placeholder="请选择">
+            <el-option
+              v-for="role in roles"
+              :key="role"
+              :value="role"
+            ></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="描述" prop="description">
           <el-input
             v-model="addForm.description"
@@ -101,6 +111,15 @@
         <el-input v-model="editForm.id" type="hidden"></el-input>
         <el-form-item label="名称">
           <el-input v-model="editForm.name"></el-input>
+        </el-form-item>
+        <el-form-item label="角色">
+          <el-select v-model="editForm.roles" multiple placeholder="请选择">
+            <el-option
+              v-for="role in roles"
+              :key="role"
+              :value="role"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="描述" prop="description">
           <el-input
@@ -149,6 +168,7 @@ export default {
 
       addForm: {
         name: '',
+        roles: [],
         description: '',
         status: '',
         sortNo: '',
@@ -160,19 +180,27 @@ export default {
       editForm: {
         id: '',
         name: '',
+        roles: [],
         description: '',
         status: '',
         sortNo: '',
         createTime: ''
       },
       editFormVisible: false,
-      editLoading: false
+      editLoading: false,
+      roles: []
     }
   },
   mounted() {
+    this.getRoles()
     this.list()
   },
   methods: {
+    getRoles() {
+      this.$axios.get('/api/admin/user/roles').then((data) => {
+        this.roles = data
+      })
+    },
     list() {
       const me = this
       me.listLoading = true
@@ -201,14 +229,17 @@ export default {
     handleAdd() {
       this.addForm = {
         name: '',
-        description: ''
+        description: '',
+        roles: []
       }
       this.addFormVisible = true
     },
     addSubmit() {
       const me = this
+      const data = { ...this.addForm, roles: '' }
+      data.roles = this.addForm.roles.join(',')
       this.$axios
-        .post('/api/admin/topic-node/create', this.addForm)
+        .post('/api/admin/topic-node/create', data)
         .then((data) => {
           me.$message({ message: '提交成功', type: 'success' })
           me.addFormVisible = false
@@ -219,27 +250,29 @@ export default {
         })
     },
     handleEdit(index, row) {
-      const me = this
       this.$axios
         .get('/api/admin/topic-node/' + row.id)
         .then((data) => {
-          me.editForm = Object.assign({}, data)
-          me.editFormVisible = true
+          this.editForm = Object.assign({}, data, {
+            roles: data.roles === '' ? [] : data.roles.split(',')
+          })
+          this.editFormVisible = true
         })
         .catch((rsp) => {
-          me.$notify.error({ title: '错误', message: rsp.message })
+          this.$notify.error({ title: '错误', message: rsp.message })
         })
     },
     editSubmit() {
-      const me = this
+      const data = { ...this.editForm, roles: '' }
+      data.roles = this.editForm.roles.join(',')
       this.$axios
-        .post('/api/admin/topic-node/update', me.editForm)
+        .post('/api/admin/topic-node/update', data)
         .then((data) => {
-          me.list()
-          me.editFormVisible = false
+          this.list()
+          this.editFormVisible = false
         })
         .catch((rsp) => {
-          me.$notify.error({ title: '错误', message: rsp.message })
+          this.$notify.error({ title: '错误', message: rsp.message })
         })
     },
 
