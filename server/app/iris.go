@@ -8,6 +8,7 @@ import (
 	"syscall"
 
 	"github.com/go-resty/resty/v2"
+	"github.com/graphql-go/graphql"
 
 	"github.com/iris-contrib/middleware/cors"
 	"github.com/kataras/iris/v12"
@@ -19,6 +20,7 @@ import (
 
 	"bbs-go/config"
 	"bbs-go/controllers/api"
+	graph "bbs-go/graphql"
 
 	"bbs-go/controllers/admin"
 	"bbs-go/middleware"
@@ -52,6 +54,8 @@ func InitIris() {
 	app.Any("/", func(i iris.Context) {
 		_, _ = i.HTML("<h1>Powered by bbs-go</h1>")
 	})
+
+	graph.InitTopicType()
 
 	// api
 	mvc.Configure(app.Party("/api"), func(m *mvc.Application) {
@@ -101,6 +105,23 @@ func InitIris() {
 		} else {
 			logrus.Error(err)
 		}
+	})
+
+	app.Post("/graphql", func(ctx iris.Context) {
+		var options graph.RequestOptions
+		if err := ctx.ReadJSON(&options); err != nil {
+			ctx.StatusCode(500)
+			ctx.EndRequest()
+			return
+		}
+		params := graphql.Params{
+			Schema:         *graph.ForumSchema,
+			RequestString:  options.Query,
+			VariableValues: options.Variables,
+			OperationName:  options.OperationName,
+		}
+		result := graphql.Do(params)
+		_, _ = ctx.JSON(result)
 	})
 
 	// if uploader is set to local, then we should start a static file server
