@@ -5,7 +5,6 @@ import (
 	"bbs-go/model/constants"
 	"bbs-go/services"
 
-	"github.com/ahmetb/go-linq"
 	"github.com/graphql-go/graphql"
 	"github.com/mlogclub/simple"
 )
@@ -15,11 +14,11 @@ var (
 	ForumSchema *graphql.Schema
 )
 
-type TopicViewModel struct {
-	Id      int
-	Title   string
-	Content string
-}
+// type TopicViewModel struct {
+// 	Id      int
+// 	Title   string
+// 	Content string
+// }
 
 func InitTopicType() {
 	TopicType = graphql.NewObject(graphql.ObjectConfig{
@@ -29,7 +28,7 @@ func InitTopicType() {
 			"id": &graphql.Field{
 				Type: graphql.Int,
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-					if model, ok := p.Source.(TopicViewModel); ok {
+					if model, ok := p.Source.(model.Topic); ok {
 						return model.Id, nil
 					}
 					return nil, nil
@@ -38,7 +37,7 @@ func InitTopicType() {
 			"title": &graphql.Field{
 				Type: graphql.String,
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-					if model, ok := p.Source.(TopicViewModel); ok {
+					if model, ok := p.Source.(model.Topic); ok {
 						return model.Title, nil
 					}
 					return nil, nil
@@ -47,7 +46,7 @@ func InitTopicType() {
 			"content": &graphql.Field{
 				Type: graphql.String,
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-					if model, ok := p.Source.(TopicViewModel); ok {
+					if model, ok := p.Source.(model.Topic); ok {
 						return model.Content, nil
 					}
 					return nil, nil
@@ -79,15 +78,15 @@ func InitTopicType() {
 						Eq("node_id", nodeId).
 						Eq("status", constants.StatusOk).
 						Page(1, pageNum).Desc("create_time"))
-					var result []TopicViewModel
-					linq.From(topics).SelectT(func(item model.Topic) TopicViewModel {
-						return TopicViewModel{
-							Id:      int(item.Id),
-							Title:   item.Title,
-							Content: item.Content,
-						}
-					}).ToSlice(&result)
-					return result, nil
+					// var result []TopicViewModel
+					// linq.From(topics).SelectT(func(item model.Topic) TopicViewModel {
+					// 	return TopicViewModel{
+					// 		Id:      int(item.Id),
+					// 		Title:   item.Title,
+					// 		Content: item.Content,
+					// 	}
+					// }).ToSlice(&result)
+					return topics, nil
 				},
 			},
 		},
