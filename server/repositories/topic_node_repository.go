@@ -1,10 +1,14 @@
 package repositories
 
 import (
+	"fmt"
+	"strings"
+
 	"github.com/jinzhu/gorm"
 	"github.com/mlogclub/simple"
 
 	"bbs-go/model"
+	"bbs-go/model/constants"
 )
 
 var TopicNodeRepository = newTopicNodeRepository()
@@ -83,4 +87,13 @@ func (r *topicNodeRepository) UpdateColumn(db *gorm.DB, id int64, name string, v
 
 func (r *topicNodeRepository) Delete(db *gorm.DB, id int64) {
 	db.Delete(&model.TopicNode{}, "id = ?", id)
+}
+
+func (r *topicNodeRepository) FindByRoles(db *gorm.DB, roles string) (list []model.TopicNode) {
+	roleReg := strings.ReplaceAll(roles, ",", ",|")
+	filter := fmt.Sprintf("(%s,)", roleReg)
+	if err := db.Model(&model.TopicNode{}).Where("(roles is null or roles = '' or CONCAT(roles,',') REGEXP ? ) and status = ?", filter, constants.StatusOk).Scan(&list).Error; err != nil {
+		return nil
+	}
+	return
 }

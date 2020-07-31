@@ -126,3 +126,8 @@ func (c *UserController) buildUserItem(user *model.User) map[string]interface{} 
 		Put("forbidden", user.IsForbidden()).
 		Build()
 }
+
+func (c *UserController) GetRoles() *simple.JsonResult {
+	roles := services.UserService.GetRoles()
+	return simple.JsonData(roles)
+}

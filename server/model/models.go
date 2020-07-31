@@ -120,6 +120,7 @@ type TopicNode struct {
 	SortNo      int    `gorm:"index:idx_sort_no" json:"sortNo" form:"sortNo"` // 排序编号
 	Status      int    `gorm:"not null" json:"status" form:"status"`          // 状态
 	CreateTime  int64  `json:"createTime" form:"createTime"`                  // 创建时间
+	Roles       string `json:"roles" form:"roles"`                            // 角色
 }
 
 // 话题节点

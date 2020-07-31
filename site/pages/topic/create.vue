@@ -118,7 +118,7 @@ export default {
   },
   async asyncData({ $axios, query, store }) {
     // 节点
-    const nodes = await $axios.get('/api/topic/nodes')
+    const nodes = await $axios.get('/api/topic/nodes/editable')
 
     // 发帖标签
     const config = store.state.config.config || {}

@@ -93,3 +93,11 @@ func (r *userRepository) GetByEmail(db *gorm.DB, email string) *model.User {
 func (r *userRepository) GetByUsername(db *gorm.DB, username string) *model.User {
 	return r.Take(db, "username = ?", username)
 }
+
+func (r *userRepository) GetAllRoles(db *gorm.DB) *[]string {
+	var result []string
+	if err := db.Model(&model.User{}).Where("roles IS NOT NULL").Pluck("DISTINCT(roles)", &result).Error; err != nil {
+		return nil
+	}
+	return &result
+}

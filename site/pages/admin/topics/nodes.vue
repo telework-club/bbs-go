@@ -6,10 +6,10 @@
           <el-input v-model="filters.name" placeholder="名称"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button @click="list" type="primary">查询</el-button>
+          <el-button type="primary" @click="list">查询</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button @click="handleAdd" type="primary">新增</el-button>
+          <el-button type="primary" @click="handleAdd">新增</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -17,14 +17,15 @@
     <el-table
       v-loading="listLoading"
       :data="results"
-      @selection-change="handleSelectionChange"
       highlight-current-row
       border
       style="width: 100%;"
+      @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="id" label="编号"></el-table-column>
       <el-table-column prop="name" label="名称"></el-table-column>
+      <el-table-column prop="roles" label="要求角色"></el-table-column>
       <el-table-column prop="description" label="描述"></el-table-column>
       <el-table-column prop="sortNo" label="排序"></el-table-column>
       <el-table-column prop="status" label="状态">
@@ -41,7 +42,7 @@
 
       <el-table-column label="操作" width="150">
         <template slot-scope="scope">
-          <el-button @click="handleEdit(scope.$index, scope.row)" size="small"
+          <el-button size="small" @click="handleEdit(scope.$index, scope.row)"
             >编辑</el-button
           >
         </template>
@@ -54,9 +55,9 @@
         :current-page="page.page"
         :page-size="page.limit"
         :total="page.total"
+        layout="total, sizes, prev, pager, next, jumper"
         @current-change="handlePageChange"
         @size-change="handleLimitChange"
-        layout="total, sizes, prev, pager, next, jumper"
       >
       </el-pagination>
     </div>
@@ -69,6 +70,15 @@
       <el-form ref="addForm" :model="addForm" label-width="80px">
         <el-form-item label="名称">
           <el-input v-model="addForm.name"></el-input>
+        </el-form-item>
+        <el-form-item label="角色">
+          <el-select v-model="addForm.roles" multiple placeholder="请选择">
+            <el-option
+              v-for="role in roles"
+              :key="role"
+              :value="role"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="描述" prop="description">
           <el-input
@@ -85,8 +95,8 @@
         <el-button @click.native="addFormVisible = false">取消</el-button>
         <el-button
           :loading="addLoading"
-          @click.native="addSubmit"
           type="primary"
+          @click.native="addSubmit"
           >提交</el-button
         >
       </div>
@@ -101,6 +111,15 @@
         <el-input v-model="editForm.id" type="hidden"></el-input>
         <el-form-item label="名称">
           <el-input v-model="editForm.name"></el-input>
+        </el-form-item>
+        <el-form-item label="角色">
+          <el-select v-model="editForm.roles" multiple placeholder="请选择">
+            <el-option
+              v-for="role in roles"
+              :key="role"
+              :value="role"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="描述" prop="description">
           <el-input
@@ -127,8 +146,8 @@
         <el-button @click.native="editFormVisible = false">取消</el-button>
         <el-button
           :loading="editLoading"
-          @click.native="editSubmit"
           type="primary"
+          @click.native="editSubmit"
           >提交</el-button
         >
       </div>
@@ -149,6 +168,7 @@ export default {
 
       addForm: {
         name: '',
+        roles: [],
         description: '',
         status: '',
         sortNo: '',
@@ -160,19 +180,27 @@ export default {
       editForm: {
         id: '',
         name: '',
+        roles: [],
         description: '',
         status: '',
         sortNo: '',
         createTime: ''
       },
       editFormVisible: false,
-      editLoading: false
+      editLoading: false,
+      roles: []
     }
   },
   mounted() {
+    this.getRoles()
     this.list()
   },
   methods: {
+    getRoles() {
+      this.$axios.get('/api/admin/user/roles').then((data) => {
+        this.roles = data
+      })
+    },
     list() {
       const me = this
       me.listLoading = true
@@ -201,14 +229,17 @@ export default {
     handleAdd() {
       this.addForm = {
         name: '',
-        description: ''
+        description: '',
+        roles: []
       }
       this.addFormVisible = true
     },
     addSubmit() {
       const me = this
+      const data = { ...this.addForm, roles: '' }
+      data.roles = this.addForm.roles.join(',')
       this.$axios
-        .post('/api/admin/topic-node/create', this.addForm)
+        .post('/api/admin/topic-node/create', data)
         .then((data) => {
           me.$message({ message: '提交成功', type: 'success' })
           me.addFormVisible = false
@@ -219,27 +250,29 @@ export default {
         })
     },
     handleEdit(index, row) {
-      const me = this
       this.$axios
         .get('/api/admin/topic-node/' + row.id)
         .then((data) => {
-          me.editForm = Object.assign({}, data)
-          me.editFormVisible = true
+          this.editForm = Object.assign({}, data, {
+            roles: data.roles === '' ? [] : data.roles.split(',')
+          })
+          this.editFormVisible = true
         })
         .catch((rsp) => {
-          me.$notify.error({ title: '错误', message: rsp.message })
+          this.$notify.error({ title: '错误', message: rsp.message })
         })
     },
     editSubmit() {
-      const me = this
+      const data = { ...this.editForm, roles: '' }
+      data.roles = this.editForm.roles.join(',')
       this.$axios
-        .post('/api/admin/topic-node/update', me.editForm)
+        .post('/api/admin/topic-node/update', data)
         .then((data) => {
-          me.list()
-          me.editFormVisible = false
+          this.list()
+          this.editFormVisible = false
         })
         .catch((rsp) => {
-          me.$notify.error({ title: '错误', message: rsp.message })
+          this.$notify.error({ title: '错误', message: rsp.message })
         })
     },
 

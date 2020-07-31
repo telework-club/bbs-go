@@ -8,14 +8,15 @@ import (
 	"bbs-go/model/constants"
 	"database/sql"
 	"errors"
-	"github.com/jinzhu/gorm"
-	"github.com/mlogclub/simple"
-	"github.com/sirupsen/logrus"
-	"github.com/tidwall/gjson"
 	"net/http"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/jinzhu/gorm"
+	"github.com/mlogclub/simple"
+	"github.com/sirupsen/logrus"
+	"github.com/tidwall/gjson"
 
 	"bbs-go/cache"
 	"bbs-go/common/avatar"
@@ -23,6 +24,8 @@ import (
 
 	"bbs-go/model"
 	"bbs-go/repositories"
+
+	. "github.com/ahmetb/go-linq"
 )
 
 // 邮箱验证邮件有效期（小时）
@@ -513,4 +516,22 @@ func (s *userService) CheckPostStatus(user *model.User) *simple.CodeError {
 		return simple.NewError(common.InObservationPeriod.Code, "账号尚在观察期，观察期时长："+strconv.Itoa(observeHour)+"小时，请稍后再试")
 	}
 	return nil
+}
+
+func (s *userService) GetRoles() *[]string {
+	var roleList []string
+	roles := repositories.UserRepository.GetAllRoles(simple.DB())
+	for _, role := range *roles {
+		if len(role) == 0 {
+			continue
+		}
+		if strings.Contains(role, ",") {
+			roleList = append(roleList, strings.Split(role, ",")...)
+		} else {
+			roleList = append(roleList, role)
+		}
+	}
+	var result []string
+	From(roleList).Distinct().ToSlice(&result)
+	return &result
 }

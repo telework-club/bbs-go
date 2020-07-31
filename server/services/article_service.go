@@ -261,7 +261,7 @@ func (s *articleService) ScanDesc(callback func(articles []model.Article)) {
 	for {
 		list := repositories.ArticleRepository.Find(simple.DB(), simple.NewSqlCnd("id", "status", "create_time", "update_time").
 			Lt("id", cursor).Desc("id").Limit(1000))
-		if list == nil || len(list) == 0 {
+		if len(list) == 0 {
 			break
 		}
 		cursor = list[len(list)-1].Id
@@ -275,7 +275,7 @@ func (s *articleService) ScanDescWithDate(dateFrom, dateTo int64, callback func(
 	for {
 		list := repositories.ArticleRepository.Find(simple.DB(), simple.NewSqlCnd("id", "status", "create_time", "update_time").
 			Lt("id", cursor).Gte("create_time", dateFrom).Lt("create_time", dateTo).Desc("id").Limit(1000))
-		if list == nil || len(list) == 0 {
+		if len(list) == 0 {
 			break
 		}
 		cursor = list[len(list)-1].Id
