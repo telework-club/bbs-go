@@ -1,9 +1,11 @@
 package graph
 
 import (
+	"bbs-go/config"
 	"bbs-go/model"
 	"bbs-go/model/constants"
 	"bbs-go/services"
+	"fmt"
 
 	"github.com/graphql-go/graphql"
 	"github.com/mlogclub/simple"
@@ -48,6 +50,15 @@ func InitTopicType() {
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 					if model, ok := p.Source.(model.Topic); ok {
 						return model.Content, nil
+					}
+					return nil, nil
+				},
+			},
+			"link": &graphql.Field{
+				Type: graphql.String,
+				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+					if model, ok := p.Source.(model.Topic); ok {
+						return fmt.Sprintf("%s/topic/%d", config.Instance.BaseUrl, model.Id), nil
 					}
 					return nil, nil
 				},
