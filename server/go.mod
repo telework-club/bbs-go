@@ -4,7 +4,6 @@ go 1.14
 
 replace (
 	github.com/go-check/check => github.com/go-check/check v0.0.0-20180628173108-788fd7840127
-	github.com/mlogclub/simple => github.com/mlogclub/simple v1.0.63
 )
 
 require (

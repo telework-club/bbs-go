@@ -118,11 +118,11 @@
 <script>
 import utils from '~/common/utils'
 import GithubLogin from '~/components/GithubLogin'
-import QqLogin from '~/components/QqLogin'
+// import QqLogin from '~/components/QqLogin'
 export default {
   components: {
-    GithubLogin,
-    QqLogin
+    GithubLogin
+    // QqLogin
   },
   asyncData({ params, query }) {
     return {
