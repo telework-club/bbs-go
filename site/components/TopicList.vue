@@ -14,7 +14,7 @@
       />
       <article itemscope itemtype="http://schema.org/BlogPosting">
         <div class="topic-header">
-          <div class="topic-header-left">
+          <div v-if="showAvatar" class="topic-header-left">
             <a :href="'/user/' + topic.user.id" :title="topic.user.nickname">
               <img :src="topic.user.smallAvatar" class="avatar" />
             </a>
@@ -65,8 +65,8 @@
             <div class="like">
               <span
                 :class="{ liked: topic.liked }"
-                @click="like(topic)"
                 class="like-btn"
+                @click="like(topic)"
               >
                 <i class="iconfont icon-like" />
               </span>
@@ -93,12 +93,16 @@ export default {
       default() {
         return []
       },
-      required: false
+      required: false,
+    },
+    showAvatar: {
+      type: Boolean,
+      default: true,
     },
     showAd: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   methods: {
     async like(topic) {
@@ -113,15 +117,15 @@ export default {
               text: '去登录',
               onClick: (e, toastObject) => {
                 utils.toSignin()
-              }
-            }
+              },
+            },
           })
         } else {
           this.$toast.error(e.message || e)
         }
       }
-    }
-  }
+    },
+  },
 }
 </script>
 

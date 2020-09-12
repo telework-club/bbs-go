@@ -25,7 +25,7 @@
               <el-form-item label="网站关键字">
                 <el-select
                   v-model="config.siteKeywords"
-                  style="width:100%"
+                  style="width: 100%;"
                   multiple
                   filterable
                   allow-create
@@ -46,7 +46,7 @@
               <el-form-item label="推荐标签">
                 <el-select
                   v-model="config.recommendTags"
-                  style="width:100%"
+                  style="width: 100%;"
                   multiple
                   filterable
                   allow-create
@@ -58,7 +58,7 @@
               <el-form-item label="默认节点">
                 <el-select
                   v-model="config.defaultNodeId"
-                  style="width:100%"
+                  style="width: 100%;"
                   placeholder="发帖默认节点"
                 >
                   <el-option
@@ -69,6 +69,13 @@
                   >
                   </el-option>
                 </el-select>
+              </el-form-item>
+
+              <el-form-item label="用户登录有效期(天)">
+                <el-input-number
+                  v-model="config.tokenExpireDays"
+                  :min="1"
+                ></el-input-number>
               </el-form-item>
 
               <el-form-item label="站外链接跳转页面">
@@ -92,16 +99,15 @@
                 </el-tooltip>
               </el-form-item>
 
-              <el-form-item label="用户观察期">
+              <el-form-item label="用户观察期(秒)">
                 <el-tooltip
                   content="观察期内用户无法发表话题、动态等内容，设置为 0 表示无观察期。"
                   placement="top"
                 >
                   <el-input-number
-                    v-model="config.userObserveHour"
+                    v-model="config.userObserveSeconds"
                     :min="0"
                     :max="720"
-                    label="用户观察期(小时)"
                   ></el-input-number>
                 </el-tooltip>
               </el-form-item>
@@ -142,11 +148,11 @@
                 </el-col>
                 <el-col :span="2">
                   <el-button
-                    @click="delNav(index)"
                     type="danger"
                     icon="el-icon-delete"
                     circle
                     size="small"
+                    @click="delNav(index)"
                   ></el-button>
                 </el-col>
               </el-row>
@@ -160,10 +166,10 @@
               placement="top"
             >
               <el-button
-                @click="addNav"
                 type="primary"
                 icon="el-icon-plus"
                 circle
+                @click="addNav"
               ></el-button>
             </el-tooltip>
           </div>
@@ -174,7 +180,7 @@
           name="scoreConfigTab"
         >
           <el-form label-width="160px">
-            <el-form-item label="发帖获得积分">
+            <el-form-item label="发帖积分">
               <el-input-number
                 v-model="config.scoreConfig.postTopicScore"
                 :min="1"
@@ -182,7 +188,7 @@
                 placeholder="发帖获得积分"
               ></el-input-number>
             </el-form-item>
-            <el-form-item label="跟帖获得积分">
+            <el-form-item label="跟帖积分">
               <el-input-number
                 v-model="config.scoreConfig.postCommentScore"
                 :min="1"
@@ -190,12 +196,20 @@
                 placeholder="跟帖获得积分"
               ></el-input-number>
             </el-form-item>
+            <el-form-item label="签到积分">
+              <el-input-number
+                v-model="config.scoreConfig.checkInScore"
+                :min="1"
+                type="text"
+                placeholder="签到获得积分"
+              ></el-input-number>
+            </el-form-item>
           </el-form>
         </el-tab-pane>
       </el-tabs>
 
       <div style="text-align: right;">
-        <el-button :loading="loading" @click="save" type="primary"
+        <el-button :loading="loading" type="primary" @click="save"
           >保存配置
         </el-button>
       </div>
@@ -209,7 +223,7 @@ import draggable from 'vuedraggable'
 export default {
   layout: 'admin',
   components: {
-    draggable
+    draggable,
   },
   data() {
     return {
@@ -217,7 +231,7 @@ export default {
       loading: false,
       autocompleteTags: [],
       autocompleteTagLoading: false,
-      nodes: []
+      nodes: [],
     }
   },
   mounted() {
@@ -239,7 +253,7 @@ export default {
       this.loading = true
       try {
         await this.$axios.post('/api/admin/sys-config/save', {
-          config: JSON.stringify(this.config)
+          config: JSON.stringify(this.config),
         })
         this.$message({ message: '提交成功', type: 'success' })
         this.load()
@@ -255,7 +269,7 @@ export default {
       }
       this.config.siteNavs.push({
         title: '',
-        url: ''
+        url: '',
       })
     },
     delNav(index) {
@@ -263,8 +277,8 @@ export default {
         return
       }
       this.config.siteNavs.splice(index, 1)
-    }
-  }
+    },
+  },
 }
 </script>
 

@@ -1,19 +1,22 @@
 package constants
 
+const DefaultTokenExpireDays = 7 // 用户登录token默认有效期
+
 // 系统配置
 const (
-	SysConfigSiteTitle        = "siteTitle"        // 站点标题
-	SysConfigSiteDescription  = "siteDescription"  // 站点描述
-	SysConfigSiteKeywords     = "siteKeywords"     // 站点关键字
-	SysConfigSiteNavs         = "siteNavs"         // 站点导航
-	SysConfigSiteNotification = "siteNotification" // 站点公告
-	SysConfigRecommendTags    = "recommendTags"    // 推荐标签
-	SysConfigUrlRedirect      = "urlRedirect"      // 是否开启链接跳转
-	SysConfigScoreConfig      = "scoreConfig"      // 分数配置
-	SysConfigDefaultNodeId    = "defaultNodeId"    // 发帖默认节点
-	SysConfigArticlePending   = "articlePending"   // 是否开启文章审核
-	SysConfigTopicCaptcha     = "topicCaptcha"     // 是否开启发帖验证码
-	SysConfigUserObserveHour  = "userObserveHour"  // 新用户观察期
+	SysConfigSiteTitle          = "siteTitle"          // 站点标题
+	SysConfigSiteDescription    = "siteDescription"    // 站点描述
+	SysConfigSiteKeywords       = "siteKeywords"       // 站点关键字
+	SysConfigSiteNavs           = "siteNavs"           // 站点导航
+	SysConfigSiteNotification   = "siteNotification"   // 站点公告
+	SysConfigRecommendTags      = "recommendTags"      // 推荐标签
+	SysConfigUrlRedirect        = "urlRedirect"        // 是否开启链接跳转
+	SysConfigScoreConfig        = "scoreConfig"        // 分数配置
+	SysConfigDefaultNodeId      = "defaultNodeId"      // 发帖默认节点
+	SysConfigArticlePending     = "articlePending"     // 是否开启文章审核
+	SysConfigTopicCaptcha       = "topicCaptcha"       // 是否开启发帖验证码
+	SysConfigUserObserveSeconds = "userObserveSeconds" // 新用户观察期
+	SysConfigTokenExpireDays    = "tokenExpireDays"    // 登录Token有效天数
 )
 
 // EntityType
@@ -23,6 +26,7 @@ const (
 	EntityComment = "comment"
 	EntityTweet   = "tweet"
 	EntityUser    = "user"
+	EntityCheckIn = "checkIn"
 )
 
 // 用户角色

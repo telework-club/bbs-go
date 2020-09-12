@@ -12,10 +12,10 @@
               <div class="control has-icons-left">
                 <input
                   v-model="nickname"
-                  @keyup.enter="signup"
                   class="input is-success"
                   type="text"
                   placeholder="请输入昵称"
+                  @keyup.enter="signup"
                 />
                 <span class="icon is-small is-left">
                   <i class="iconfont icon-username" />
@@ -28,10 +28,10 @@
               <div class="control has-icons-left">
                 <input
                   v-model="email"
-                  @keyup.enter="signup"
                   class="input is-success"
                   type="text"
                   placeholder="请输入邮箱"
+                  @keyup.enter="signup"
                 />
                 <span class="icon is-small is-left">
                   <i class="iconfont icon-email" />
@@ -44,10 +44,10 @@
               <div class="control has-icons-left">
                 <input
                   v-model="password"
-                  @keyup.enter="signup"
                   class="input"
                   type="password"
                   placeholder="请输入密码"
+                  @keyup.enter="signup"
                 />
                 <span class="icon is-small is-left">
                   <i class="iconfont icon-password" />
@@ -60,10 +60,10 @@
               <div class="control has-icons-left">
                 <input
                   v-model="rePassword"
-                  @keyup.enter="signup"
                   class="input"
                   type="password"
                   placeholder="请再次输入密码"
+                  @keyup.enter="signup"
                 />
                 <span class="icon is-small is-left">
                   <i class="iconfont icon-password" />
@@ -75,13 +75,13 @@
               <label class="label">验证码</label>
               <div class="control has-icons-left">
                 <div class="field is-horizontal">
-                  <div class="field" style="width:100%;">
+                  <div class="field" style="width: 100%;">
                     <input
                       v-model="captchaCode"
-                      @keyup.enter="signup"
                       class="input"
                       type="text"
                       placeholder="验证码"
+                      @keyup.enter="signup"
                     />
                     <span class="icon is-small is-left"
                       ><i class="iconfont icon-captcha"
@@ -98,7 +98,7 @@
 
             <div class="field">
               <div class="control">
-                <button @click="signup" class="button is-success">
+                <button class="button is-success" @click="signup">
                   注册
                 </button>
                 <github-login :ref-url="ref" />
@@ -122,11 +122,11 @@ import QqLogin from '~/components/QqLogin'
 export default {
   components: {
     GithubLogin,
-    QqLogin
+    QqLogin,
   },
   asyncData({ params, query }) {
     return {
-      ref: query.ref
+      ref: query.ref,
     }
   },
   data() {
@@ -137,7 +137,7 @@ export default {
       rePassword: '',
       captchaId: '',
       captchaUrl: '',
-      captchaCode: ''
+      captchaCode: '',
     }
   },
   mounted() {
@@ -153,7 +153,7 @@ export default {
           email: this.email,
           password: this.password,
           rePassword: this.rePassword,
-          ref: this.ref
+          ref: this.ref,
         })
         if (this.ref) {
           // 跳到登录前
@@ -176,13 +176,13 @@ export default {
       } catch (e) {
         this.$toast.error(e.message || e)
       }
-    }
+    },
   },
   head() {
     return {
-      title: this.$siteTitle('注册')
+      title: this.$siteTitle('注册'),
     }
-  }
+  },
 }
 </script>
 

@@ -11,16 +11,16 @@
         <el-form-item>
           <el-select
             v-model="filters.status"
-            @change="list"
             clearable
             placeholder="请选择状态"
+            @change="list"
           >
             <el-option label="正常" value="0"></el-option>
             <el-option label="删除" value="1"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button @click="list" type="primary">查询</el-button>
+          <el-button type="primary" @click="list">查询</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -97,7 +97,7 @@
 
             <div class="pin-action-row">
               <div class="action-box">
-                <div @click="like(tweet)" class="like-action action">
+                <div class="like-action action" @click="like(tweet)">
                   <div class="action-title-box">
                     <i class="iconfont icon-like" />
                     <span class="action-title">{{
@@ -119,8 +119,8 @@
                 </a>
                 <div
                   v-if="tweet.status === 0"
-                  @click="deleteSubmit(tweet)"
                   class="like-action action"
+                  @click="deleteSubmit(tweet)"
                 >
                   <div class="action-title-box">
                     <i class="iconfont icon-delete" />
@@ -129,8 +129,8 @@
                 </div>
                 <div
                   v-if="tweet.status === 1"
-                  @click="undeleteSubmit(tweet)"
                   class="like-action action"
+                  @click="undeleteSubmit(tweet)"
                 >
                   <div class="action-title-box">
                     <i class="iconfont icon-delete" />
@@ -150,9 +150,9 @@
         :current-page="page.page"
         :page-size="page.limit"
         :total="page.total"
+        layout="total, sizes, prev, pager, next, jumper"
         @current-change="handlePageChange"
         @size-change="handleLimitChange"
-        layout="total, sizes, prev, pager, next, jumper"
       >
       </el-pagination>
     </div>
@@ -170,9 +170,9 @@ export default {
       listLoading: false,
       page: {},
       filters: {
-        status: '0'
+        status: '0',
       },
-      selectedRows: []
+      selectedRows: [],
     }
   },
   mounted() {
@@ -184,7 +184,7 @@ export default {
       me.listLoading = true
       const params = Object.assign(me.filters, {
         page: me.page.page,
-        limit: me.page.limit
+        limit: me.page.limit,
       })
       this.$axios
         .post('/api/admin/tweet/list', params)
@@ -212,23 +212,23 @@ export default {
       this.$confirm('是否确认删除该动态?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
       })
-        .then(function() {
+        .then(function () {
           me.$axios
             .post('/api/admin/tweet/delete', { id: tweet.tweetId })
-            .then(function() {
+            .then(function () {
               me.$message({ message: '删除成功', type: 'success' })
               me.list()
             })
-            .catch(function(err) {
+            .catch(function (err) {
               me.$notify.error({ title: '错误', message: err.message || err })
             })
         })
-        .catch(function() {
+        .catch(function () {
           me.$message({
             type: 'info',
-            message: '已取消删除'
+            message: '已取消删除',
           })
         })
     },
@@ -236,11 +236,11 @@ export default {
       const me = this
       me.$axios
         .post('/api/admin/tweet/undelete', { id: tweet.tweetId })
-        .then(function() {
+        .then(function () {
           me.$message({ message: '已取消删除', type: 'success' })
           me.list()
         })
-        .catch(function(err) {
+        .catch(function (err) {
           me.$notify.error({ title: '错误', message: err.message || err })
         })
     },
@@ -256,15 +256,15 @@ export default {
               text: '去登录',
               onClick: (e, toastObject) => {
                 utils.toSignin()
-              }
-            }
+              },
+            },
           })
         } else {
           this.$toast.error(e.message || e)
         }
       }
-    }
-  }
+    },
+  },
 }
 </script>
 

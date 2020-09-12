@@ -7,8 +7,8 @@
           >{{ tag
           }}<i
             :data-name="tag"
-            @click="clickRemoveTag"
             class="iconfont icon-close"
+            @click="clickRemoveTag"
         /></span>
       </span>
     </div>
@@ -17,9 +17,11 @@
       v-model="inputTag"
       :placeholder="
         '标签（请用逗号分隔每个标签，最多' +
-          maxTagCount +
-          '个，每个最长15字符）'
+        maxTagCount +
+        '个，每个最长15字符）'
       "
+      class="input"
+      type="text"
       @input="autocomplete"
       @keydown.delete="removeTag"
       @keydown.enter="addTag"
@@ -29,9 +31,7 @@
       @keydown.38="selectUp"
       @keydown.40="selectDown"
       @keydown.esc="close"
-      class="input"
       @focus="openRecommendTags"
-      type="text"
       @blur="closeRecommendTags"
       @click="openRecommendTags"
     />
@@ -42,9 +42,9 @@
             v-for="(item, index) in autocompleteTags"
             :key="item"
             :class="{ active: index === selectIndex }"
+            class="tag-item"
             @click="selectTag(index)"
             v-text="item"
-            class="tag-item"
           />
         </section>
       </div>
@@ -54,15 +54,15 @@
         <div class="header">
           <span>推荐标签</span>
           <span class="close-recommend"
-            ><i @click="closeRecommendTags" class="iconfont icon-close"
+            ><i class="iconfont icon-close" @click="closeRecommendTags"
           /></span>
         </div>
         <a
           v-for="tag in recommendTags"
           :key="tag"
+          class="tag-item"
           @click="addRecommendTag(tag)"
           v-text="tag"
-          class="tag-item"
         />
       </div>
     </div>
@@ -76,8 +76,8 @@ export default {
       type: Array,
       default() {
         return []
-      }
-    }
+      },
+    },
   },
   data() {
     return {
@@ -87,14 +87,14 @@ export default {
       showRecommendTags: false, // 是否显示推荐
       inputTag: '',
       autocompleteTags: [],
-      selectIndex: -1
+      selectIndex: -1,
     }
   },
   computed: {
     // 推荐标签
     recommendTags() {
       return this.$store.state.config.config.recommendTags
-    }
+    },
   },
   methods: {
     removeTag(event, tag) {
@@ -195,7 +195,7 @@ export default {
         this.autocompleteTags = []
       } else {
         const ret = await this.$axios.post('/api/tag/autocomplete', {
-          input: this.inputTag
+          input: this.inputTag,
         })
         this.autocompleteTags = []
         if (ret.length > 0) {
@@ -249,8 +249,8 @@ export default {
         this.selectIndex = -1
       }
       this.closeRecommendTags()
-    }
-  }
+    },
+  },
 }
 </script>
 
