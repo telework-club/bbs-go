@@ -102,7 +102,7 @@
                   注册
                 </button>
                 <github-login :ref-url="ref" />
-                <qq-login :ref-url="ref" />
+                <!-- <qq-login :ref-url="ref" /> -->
                 <nuxt-link class="button is-text" to="/user/signin">
                   已有账号，前往登录&gt;&gt;
                 </nuxt-link>
