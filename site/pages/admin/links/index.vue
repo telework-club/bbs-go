@@ -33,7 +33,7 @@
       :data="results"
       highlight-current-row
       stripe
-      style="width: 100%;"
+      style="width: 100%"
     >
       <el-table-column prop="id" label="编号" width="100"></el-table-column>
       <el-table-column prop="title" label="标题"></el-table-column>
@@ -87,7 +87,7 @@
     >
       <el-form ref="addForm" :model="addForm" label-width="80px">
         <el-form-item label="链接">
-          <el-input v-model="addForm.url" style="width: 80%;"></el-input>&nbsp;
+          <el-input v-model="addForm.url" style="width: 80%"></el-input>&nbsp;
           <el-button type="primary" @click="detect">Detect</el-button>
         </el-form-item>
         <el-form-item label="标题">
@@ -179,7 +179,7 @@ export default {
       editForm: {},
       editFormVisible: false,
       editFormRules: {},
-      editLoading: false
+      editLoading: false,
     }
   },
   mounted() {
@@ -191,7 +191,7 @@ export default {
       me.listLoading = true
       const params = Object.assign(me.filters, {
         page: me.page.page,
-        limit: me.page.limit
+        limit: me.page.limit,
       })
       this.$axios
         .post('/api/admin/link/list', params)
@@ -240,7 +240,7 @@ export default {
         )
         if (flag) {
           const data = await this.$axios.get('/api/admin/link/detect', {
-            url: this.addForm.url
+            url: this.addForm.url,
           })
           if (data) {
             this.addForm.title = data.title
@@ -274,8 +274,8 @@ export default {
         .catch((rsp) => {
           me.$notify.error({ title: '错误', message: rsp.message })
         })
-    }
-  }
+    },
+  },
 }
 </script>
 

@@ -33,9 +33,7 @@
                 <a :href="'/user/' + user.id + '/topics'">查看更多&gt;&gt;</a>
               </div>
             </div>
-            <div v-else class="notification is-primary">
-              暂无话题
-            </div>
+            <div v-else class="notification is-primary">暂无话题</div>
           </div>
 
           <div v-if="activeTab === 'articles'">
@@ -45,9 +43,7 @@
                 <a :href="'/user/' + user.id + '/articles'">查看更多&gt;&gt;</a>
               </div>
             </div>
-            <div v-else class="notification is-primary">
-              暂无文章
-            </div>
+            <div v-else class="notification is-primary">暂无文章</div>
           </div>
         </div>
       </div>
@@ -69,7 +65,7 @@ export default {
     TopicList,
     ArticleList,
     UserProfile,
-    UserCenterSidebar
+    UserCenterSidebar,
   },
   async asyncData({ $axios, params, query, error }) {
     let user
@@ -78,7 +74,7 @@ export default {
     } catch (err) {
       error({
         statusCode: 404,
-        message: err.message || '系统错误'
+        message: err.message || '系统错误',
       })
       return
     }
@@ -88,18 +84,18 @@ export default {
     let recentArticles = null
     if (activeTab === 'topics') {
       recentTopics = await $axios.get('/api/topic/user/recent', {
-        params: { userId: params.userId }
+        params: { userId: params.userId },
       })
     } else if (activeTab === 'articles') {
       recentArticles = await $axios.get('/api/article/user/recent', {
-        params: { userId: params.userId }
+        params: { userId: params.userId },
       })
     }
     return {
       activeTab,
       user,
       recentTopics,
-      recentArticles
+      recentArticles,
     }
   },
   data() {
@@ -112,13 +108,13 @@ export default {
     isOwner() {
       const current = this.$store.state.user.current
       return this.user && current && this.user.id === current.id
-    }
+    },
   },
   head() {
     return {
-      title: this.$siteTitle(this.user.nickname)
+      title: this.$siteTitle(this.user.nickname),
     }
-  }
+  },
 }
 </script>
 

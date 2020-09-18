@@ -3,9 +3,7 @@
     <div class="container">
       <div class="main-body">
         <div class="widget">
-          <div class="widget-header">
-            注册
-          </div>
+          <div class="widget-header">注册</div>
           <div class="widget-content">
             <div class="field">
               <label class="label">昵称</label>
@@ -75,7 +73,7 @@
               <label class="label">验证码</label>
               <div class="control has-icons-left">
                 <div class="field is-horizontal">
-                  <div class="field" style="width: 100%;">
+                  <div class="field" style="width: 100%">
                     <input
                       v-model="captchaCode"
                       class="input"
@@ -89,7 +87,7 @@
                   </div>
                   <div v-if="captchaUrl" class="field">
                     <a @click="showCaptcha"
-                      ><img :src="captchaUrl" style="height: 40px;"
+                      ><img :src="captchaUrl" style="height: 40px"
                     /></a>
                   </div>
                 </div>
@@ -98,9 +96,7 @@
 
             <div class="field">
               <div class="control">
-                <button class="button is-success" @click="signup">
-                  注册
-                </button>
+                <button class="button is-success" @click="signup">注册</button>
                 <github-login :ref-url="ref" />
                 <!-- <qq-login :ref-url="ref" /> -->
                 <nuxt-link class="button is-text" to="/user/signin">
@@ -121,12 +117,12 @@ import GithubLogin from '~/components/GithubLogin'
 // import QqLogin from '~/components/QqLogin'
 export default {
   components: {
-    GithubLogin
+    GithubLogin,
     // QqLogin
   },
   asyncData({ params, query }) {
     return {
-      ref: query.ref
+      ref: query.ref,
     }
   },
   data() {
@@ -137,7 +133,7 @@ export default {
       rePassword: '',
       captchaId: '',
       captchaUrl: '',
-      captchaCode: ''
+      captchaCode: '',
     }
   },
   mounted() {
@@ -153,7 +149,7 @@ export default {
           email: this.email,
           password: this.password,
           rePassword: this.rePassword,
-          ref: this.ref
+          ref: this.ref,
         })
         if (this.ref) {
           // 跳到登录前
@@ -176,13 +172,13 @@ export default {
       } catch (e) {
         this.$toast.error(e.message || e)
       }
-    }
+    },
   },
   head() {
     return {
-      title: this.$siteTitle('注册')
+      title: this.$siteTitle('注册'),
     }
-  }
+  },
 }
 </script>
 

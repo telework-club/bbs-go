@@ -7,7 +7,7 @@
     >
       <div class="navbar-brand">
         <div class="navbar-item">
-          <img style="width:1.75rem" src="~/assets/images/logo.svg" />
+          <img style="width: 1.75rem" src="~/assets/images/logo.svg" />
         </div>
 
         <a
@@ -125,13 +125,13 @@ export default {
   middleware: ['authenticated'],
   data() {
     return {
-      navbarActive: false
+      navbarActive: false,
     }
   },
   methods: {
     toggleNav() {
       this.navbarActive = !this.navbarActive
-    }
+    },
   },
   head() {
     return {
@@ -139,11 +139,11 @@ export default {
       link: [
         {
           rel: 'stylesheet',
-          href: '//unpkg.com/element-ui/lib/theme-chalk/index.css'
-        }
-      ]
+          href: '//unpkg.com/element-ui/lib/theme-chalk/index.css',
+        },
+      ],
     }
-  }
+  },
 }
 </script>
 

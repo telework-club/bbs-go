@@ -1,6 +1,6 @@
 export const state = () => ({
   current: null,
-  userToken: null
+  userToken: null,
 })
 
 export const mutations = {
@@ -9,7 +9,7 @@ export const mutations = {
   },
   setUserToken(state, userToken) {
     state.userToken = userToken
-  }
+  },
 }
 
 export const actions = {
@@ -35,7 +35,7 @@ export const actions = {
       captchaId,
       captchaCode,
       username,
-      password
+      password,
     })
     context.dispatch('loginSuccess', ret)
     return ret.user
@@ -46,8 +46,8 @@ export const actions = {
     const ret = await this.$axios.get('/api/login/github/callback', {
       params: {
         code,
-        state
-      }
+        state,
+      },
     })
     context.dispatch('loginSuccess', ret)
     return ret.user
@@ -58,8 +58,8 @@ export const actions = {
     const ret = await this.$axios.get('/api/login/qq/callback', {
       params: {
         code,
-        state
-      }
+        state,
+      },
     })
     context.dispatch('loginSuccess', ret)
     return ret.user
@@ -76,7 +76,7 @@ export const actions = {
       username,
       email,
       password,
-      rePassword
+      rePassword,
     })
     context.dispatch('loginSuccess', ret)
     return ret.user
@@ -87,11 +87,11 @@ export const actions = {
     const userToken = this.$cookies.get('userToken')
     await this.$axios.get('/api/login/signout', {
       params: {
-        userToken
-      }
+        userToken,
+      },
     })
     context.commit('setUserToken', null)
     context.commit('setCurrent', null)
     this.$cookies.remove('userToken')
-  }
+  },
 }

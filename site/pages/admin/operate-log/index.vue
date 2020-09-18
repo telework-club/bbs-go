@@ -28,7 +28,7 @@
       :data="results"
       highlight-current-row
       stripe
-      style="width: 100%;"
+      style="width: 100%"
     >
       <el-table-column type="expand">
         <template slot-scope="scope">
@@ -71,7 +71,7 @@ export default {
       results: [],
       listLoading: false,
       page: {},
-      filters: {}
+      filters: {},
     }
   },
   mounted() {
@@ -83,7 +83,7 @@ export default {
       me.listLoading = true
       const params = Object.assign(me.filters, {
         page: me.page.page,
-        limit: me.page.limit
+        limit: me.page.limit,
       })
       this.$axios
         .post('/api/admin/operate-log/list', params)
@@ -102,8 +102,8 @@ export default {
     handleLimitChange(val) {
       this.page.limit = val
       this.list()
-    }
-  }
+    },
+  },
 }
 </script>
 

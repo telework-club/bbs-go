@@ -11,7 +11,7 @@
       </div>
       <div v-else>
         <a @click="doCheckIn">立即签到</a>
-        <div style="color: #f14668;">签到可以获得积分哦!</div>
+        <div style="color: #f14668">签到可以获得积分哦!</div>
       </div>
     </div>
   </div>
@@ -21,7 +21,7 @@
 export default {
   data() {
     return {
-      checkIn: null
+      checkIn: null,
     }
   },
   mounted() {
@@ -43,8 +43,8 @@ export default {
       } catch (e) {
         console.error(e)
       }
-    }
-  }
+    },
+  },
 }
 </script>
 

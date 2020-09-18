@@ -11,26 +11,26 @@ export default {
   props: {
     editorId: {
       type: String,
-      default: 'vditor'
+      default: 'vditor',
     },
     value: {
       type: String,
-      default: ''
+      default: '',
     },
     height: {
       type: String,
-      default: '400px' // normal、mini
+      default: '400px', // normal、mini
     },
     placeholder: {
       type: String,
-      default: '请输入...'
-    }
+      default: '请输入...',
+    },
   },
   data() {
     return {
       isLoading: true,
       vditor: null,
-      width: '100%'
+      width: '100%',
     }
   },
   mounted() {
@@ -45,7 +45,7 @@ export default {
       if (process.client) {
         this.vditor = new window.Vditor(
           this.editorId,
-          this.getOptions(function() {
+          this.getOptions(function () {
             me.vditor.setValue(me.value)
           })
         )
@@ -58,7 +58,7 @@ export default {
         width: me.width,
         height: me.height,
         toolbarConfig: {
-          pin: true
+          pin: true,
         },
         toolbar: [
           'emoji',
@@ -101,13 +101,13 @@ export default {
               'preview',
               'devtools',
               'info',
-              'help'
-            ]
-          }
+              'help',
+            ],
+          },
         ],
         placeholder: me.placeholder,
         cache: {
-          enable: false
+          enable: false,
         },
         counter: '999999',
         delay: 500,
@@ -117,8 +117,8 @@ export default {
           hljs: {
             enable: true,
             style: 'github',
-            lineNumber: true
-          }
+            lineNumber: true,
+          },
         },
         input(val) {
           me.$emit('input', val)
@@ -133,9 +133,9 @@ export default {
           linkToImgUrl: '/api/upload/fetch?userToken=' + userToken,
           filename(name) {
             return name.replace(/\?|\\|\/|:|\||<|>|\*|\[|\]|\s+/g, '-')
-          }
+          },
         },
-        after: afterFunc || function() {}
+        after: afterFunc || function () {},
       }
     },
     /**
@@ -155,23 +155,23 @@ export default {
       if (this.vditor) {
         this.vditor.clearCache()
       }
-    }
+    },
   },
   head() {
     return {
       link: [
         {
           rel: 'stylesheet',
-          href: '//cdn.jsdelivr.net/npm/vditor@3.4.7/dist/index.css'
-        }
+          href: '//cdn.jsdelivr.net/npm/vditor@3.4.7/dist/index.css',
+        },
       ],
       script: [
         {
-          src: '//cdn.jsdelivr.net/npm/vditor@3.4.7/dist/index.min.js'
-        }
-      ]
+          src: '//cdn.jsdelivr.net/npm/vditor@3.4.7/dist/index.min.js',
+        },
+      ],
     }
-  }
+  },
 }
 </script>
 

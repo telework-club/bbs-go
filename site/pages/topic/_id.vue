@@ -161,12 +161,8 @@
           />
         </div>
         <div class="right-container">
-          <a
-            class="button is-success"
-            href="/topic/create"
-            style="width: 100%;"
-          >
-            <span class="icon"><i class="iconfont icon-topic"/></span>
+          <a class="button is-success" href="/topic/create" style="width: 100%">
+            <span class="icon"><i class="iconfont icon-topic" /></span>
             <span>发表话题</span>
           </a>
           <div class="user-simple">
@@ -209,9 +205,7 @@
           </div>
 
           <div v-if="topic.toc" ref="toc" class="widget no-bg toc">
-            <div class="widget-header">
-              目录
-            </div>
+            <div class="widget-header">目录</div>
             <div class="widget-content" v-html="topic.toc" />
           </div>
         </div>
@@ -227,7 +221,7 @@ import UserHelper from '~/common/UserHelper'
 
 export default {
   components: {
-    Comment
+    Comment,
   },
   async asyncData({ $axios, params, error }) {
     let topic
@@ -236,7 +230,7 @@ export default {
     } catch (e) {
       error({
         statusCode: 404,
-        message: '话题不存在'
+        message: '话题不存在',
       })
       return
     }
@@ -245,23 +239,23 @@ export default {
       $axios.get('/api/favorite/favorited', {
         params: {
           entityType: 'topic',
-          entityId: params.id
-        }
+          entityId: params.id,
+        },
       }),
       $axios.get('/api/comment/list', {
         params: {
           entityType: 'topic',
-          entityId: params.id
-        }
+          entityId: params.id,
+        },
       }),
-      $axios.get('/api/topic/recentlikes/' + params.id)
+      $axios.get('/api/topic/recentlikes/' + params.id),
     ])
 
     return {
       topic,
       commentsPage,
       favorited: favorited.favorited,
-      likeUsers
+      likeUsers,
     }
   },
   computed: {
@@ -280,7 +274,7 @@ export default {
     },
     user() {
       return this.$store.state.user.current
-    }
+    },
   },
   mounted() {},
   methods: {
@@ -290,8 +284,8 @@ export default {
           await this.$axios.get('/api/favorite/delete', {
             params: {
               entityType: 'topic',
-              entityId: topicId
-            }
+              entityId: topicId,
+            },
           })
           this.favorited = false
           this.$toast.success('已取消收藏！')
@@ -315,7 +309,7 @@ export default {
           duration: 2000,
           onComplete() {
             utils.linkTo('/topics')
-          }
+          },
         })
       } catch (e) {
         console.error(e)
@@ -336,21 +330,21 @@ export default {
               text: '去登录',
               onClick: (e, toastObject) => {
                 utils.toSignin()
-              }
-            }
+              },
+            },
           })
         } else {
           topic.liked = true
           this.$toast.error(e.message || e)
         }
       }
-    }
+    },
   },
   head() {
     return {
-      title: this.$siteTitle(this.topic.title)
+      title: this.$siteTitle(this.topic.title),
     }
-  }
+  },
 }
 </script>
 

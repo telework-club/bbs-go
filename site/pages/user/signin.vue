@@ -3,9 +3,7 @@
     <div class="container">
       <div class="main-body">
         <div class="widget">
-          <div class="widget-header">
-            登录
-          </div>
+          <div class="widget-header">登录</div>
           <div class="widget-content">
             <div class="field">
               <label class="label">用户名/邮箱</label>
@@ -49,7 +47,7 @@
                       class="input"
                       type="text"
                       placeholder="验证码"
-                      style="max-width: 150px; margin-right: 20px;"
+                      style="max-width: 150px; margin-right: 20px"
                       @keyup.enter="submitLogin"
                     />
                     <span class="icon is-small is-left"
@@ -58,7 +56,7 @@
                   </div>
                   <div v-if="captchaUrl" class="field">
                     <a @click="showCaptcha"
-                      ><img :src="captchaUrl" style="height: 40px;"
+                      ><img :src="captchaUrl" style="height: 40px"
                     /></a>
                   </div>
                 </div>
@@ -90,12 +88,12 @@ import GithubLogin from '~/components/GithubLogin'
 // import QqLogin from '~/components/QqLogin'
 export default {
   components: {
-    GithubLogin
+    GithubLogin,
     // QqLogin
   },
   asyncData({ params, query }) {
     return {
-      ref: query.ref
+      ref: query.ref,
     }
   },
   data() {
@@ -104,7 +102,7 @@ export default {
       password: '',
       captchaId: '',
       captchaUrl: '',
-      captchaCode: ''
+      captchaCode: '',
     }
   },
   computed: {
@@ -113,7 +111,7 @@ export default {
     },
     isLogin() {
       return !!this.currentUser
-    }
+    },
   },
   mounted() {
     if (this.redirectIfLogined()) {
@@ -141,7 +139,7 @@ export default {
           captchaCode: this.captchaCode,
           username: this.username,
           password: this.password,
-          ref: this.ref
+          ref: this.ref,
         })
         if (this.ref) {
           // 跳到登录前
@@ -159,8 +157,8 @@ export default {
       try {
         const ret = await this.$axios.get('/api/captcha/request', {
           params: {
-            captchaId: this.captchaId || ''
-          }
+            captchaId: this.captchaId || '',
+          },
         })
         this.captchaId = ret.captchaId
         this.captchaUrl = ret.captchaUrl
@@ -185,17 +183,17 @@ export default {
             } else {
               utils.linkTo('/')
             }
-          }
+          },
         })
         return true
       }
       return false
-    }
+    },
   },
   head() {
     return {
-      title: this.$siteTitle('登录')
+      title: this.$siteTitle('登录'),
     }
-  }
+  },
 }
 </script>
