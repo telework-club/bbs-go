@@ -55,4 +55,4 @@ HEALTHCHECK --start-period=10s \
             --retries=3 \
             CMD curl -sSf http://localhost:8082/api/img/proxy || exit 1
 
-CMD ["./start.sh"]
+CMD ["./bbs-go-server"]
