@@ -273,7 +273,7 @@ export default {
       listLoading: false,
       page: {},
       filters: {
-        id: '',
+        id: ''
       },
       selectedRows: [],
 
@@ -284,7 +284,7 @@ export default {
         email: '',
         roles: [],
         password: '',
-        status: '',
+        status: ''
       },
       addFormVisible: false,
       addFormRules: {},
@@ -298,7 +298,7 @@ export default {
         email: '',
         roles: [],
         password: '',
-        status: '',
+        status: ''
       },
       editFormVisible: false,
       editFormRules: {},
@@ -307,10 +307,10 @@ export default {
       forbiddenForm: {
         userId: '',
         days: 0,
-        reason: '',
+        reason: ''
       },
       forbiddenFormVisible: false,
-      forbiddenLoading: false,
+      forbiddenLoading: false
     }
   },
   mounted() {
@@ -322,7 +322,7 @@ export default {
       me.listLoading = true
       const params = Object.assign(me.filters, {
         page: me.page.page,
-        limit: me.page.limit,
+        limit: me.page.limit
       })
       this.$axios
         .post('/api/admin/user/list', params)
@@ -345,7 +345,7 @@ export default {
     handleAdd() {
       this.addForm = {
         name: '',
-        description: '',
+        description: ''
       }
       this.addFormVisible = true
     },
@@ -400,7 +400,7 @@ export default {
       this.forbiddenForm = {
         userId: row.id,
         days: 7,
-        reason: '广告',
+        reason: '广告'
       }
       this.forbiddenFormVisible = true
     },
@@ -422,15 +422,15 @@ export default {
       try {
         await this.$axios.post('/api/admin/user/forbidden', {
           userId: row.id,
-          days: 0,
+          days: 0
         })
         this.$message.success('取消禁言成功')
         this.list()
       } catch (e) {
         this.$message.success('取消禁言失败 ' + (e.message || e))
       }
-    },
-  },
+    }
+  }
 }
 </script>
 

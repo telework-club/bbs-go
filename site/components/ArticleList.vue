@@ -80,13 +80,13 @@ export default {
       default() {
         return []
       },
-      required: false,
+      required: false
     },
     showAd: {
       type: Boolean,
-      default: false,
-    },
-  },
+      default: false
+    }
+  }
 }
 </script>
 

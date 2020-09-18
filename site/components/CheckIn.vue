@@ -21,7 +21,7 @@
 export default {
   data() {
     return {
-      checkIn: null,
+      checkIn: null
     }
   },
   mounted() {
@@ -43,8 +43,8 @@ export default {
       } catch (e) {
         console.error(e)
       }
-    },
-  },
+    }
+  }
 }
 </script>
 

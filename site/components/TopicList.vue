@@ -93,16 +93,16 @@ export default {
       default() {
         return []
       },
-      required: false,
+      required: false
     },
     showAvatar: {
       type: Boolean,
-      default: true,
+      default: true
     },
     showAd: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   methods: {
     async like(topic) {
@@ -117,15 +117,15 @@ export default {
               text: '去登录',
               onClick: (e, toastObject) => {
                 utils.toSignin()
-              },
-            },
+              }
+            }
           })
         } else {
           this.$toast.error(e.message || e)
         }
       }
-    },
-  },
+    }
+  }
 }
 </script>
 

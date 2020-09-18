@@ -49,17 +49,17 @@ export default {
   components: { UserProfile, UserCenterSidebar, Pagination },
   async asyncData({ $axios, query }) {
     const [scoreLogsPage] = await Promise.all([
-      $axios.get('/api/user/scorelogs?page=' + (query.p || 1)),
+      $axios.get('/api/user/scorelogs?page=' + (query.p || 1))
     ])
     return {
-      scoreLogsPage,
+      scoreLogsPage
     }
   },
   computed: {
     currentUser() {
       return this.$store.state.user.current
-    },
-  },
+    }
+  }
 }
 </script>
 

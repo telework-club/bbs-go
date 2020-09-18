@@ -223,7 +223,7 @@ import draggable from 'vuedraggable'
 export default {
   layout: 'admin',
   components: {
-    draggable,
+    draggable
   },
   data() {
     return {
@@ -231,7 +231,7 @@ export default {
       loading: false,
       autocompleteTags: [],
       autocompleteTagLoading: false,
-      nodes: [],
+      nodes: []
     }
   },
   mounted() {
@@ -253,7 +253,7 @@ export default {
       this.loading = true
       try {
         await this.$axios.post('/api/admin/sys-config/save', {
-          config: JSON.stringify(this.config),
+          config: JSON.stringify(this.config)
         })
         this.$message({ message: '提交成功', type: 'success' })
         this.load()
@@ -269,7 +269,7 @@ export default {
       }
       this.config.siteNavs.push({
         title: '',
-        url: '',
+        url: ''
       })
     },
     delNav(index) {
@@ -277,8 +277,8 @@ export default {
         return
       }
       this.config.siteNavs.splice(index, 1)
-    },
-  },
+    }
+  }
 }
 </script>
 

@@ -118,15 +118,15 @@
 <script>
 import utils from '~/common/utils'
 import GithubLogin from '~/components/GithubLogin'
-import QqLogin from '~/components/QqLogin'
+// import QqLogin from '~/components/QqLogin'
 export default {
   components: {
-    GithubLogin,
-    QqLogin,
+    GithubLogin
+    // QqLogin
   },
   asyncData({ params, query }) {
     return {
-      ref: query.ref,
+      ref: query.ref
     }
   },
   data() {
@@ -137,7 +137,7 @@ export default {
       rePassword: '',
       captchaId: '',
       captchaUrl: '',
-      captchaCode: '',
+      captchaCode: ''
     }
   },
   mounted() {
@@ -153,7 +153,7 @@ export default {
           email: this.email,
           password: this.password,
           rePassword: this.rePassword,
-          ref: this.ref,
+          ref: this.ref
         })
         if (this.ref) {
           // 跳到登录前
@@ -176,13 +176,13 @@ export default {
       } catch (e) {
         this.$toast.error(e.message || e)
       }
-    },
+    }
   },
   head() {
     return {
-      title: this.$siteTitle('注册'),
+      title: this.$siteTitle('注册')
     }
-  },
+  }
 }
 </script>
 

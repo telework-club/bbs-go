@@ -93,7 +93,7 @@ export default {
   components: {
     TagInput,
     MarkdownHelp,
-    MarkdownEditor,
+    MarkdownEditor
   },
   async asyncData({ $axios, params }) {
     const [topic, nodes] = await Promise.all([
@@ -107,8 +107,8 @@ export default {
         nodeId: topic.nodeId,
         title: topic.title,
         tags: topic.tags,
-        content: topic.content,
-      },
+        content: topic.content
+      }
     }
   },
   data() {
@@ -118,14 +118,14 @@ export default {
         nodeId: 0,
         title: '',
         tags: [],
-        content: '',
-      },
+        content: ''
+      }
     }
   },
   computed: {
     currentUser() {
       return this.$store.state.user.current
-    },
+    }
   },
   mounted() {},
   methods: {
@@ -143,27 +143,27 @@ export default {
             nodeId: this.postForm.nodeId,
             title: this.postForm.title,
             content: this.postForm.content,
-            tags: this.postForm.tags ? this.postForm.tags.join(',') : '',
+            tags: this.postForm.tags ? this.postForm.tags.join(',') : ''
           }
         )
         this.$toast.success('提交成功', {
           duration: 1000,
           onComplete() {
             utils.linkTo('/topic/' + topic.topicId)
-          },
+          }
         })
       } catch (e) {
         console.error(e)
         me.publishing = false
         this.$toast.error('提交失败：' + (e.message || e))
       }
-    },
+    }
   },
   head() {
     return {
-      title: this.$siteTitle('修改话题'),
+      title: this.$siteTitle('修改话题')
     }
-  },
+  }
 }
 </script>
 
