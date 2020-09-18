@@ -23,7 +23,7 @@ WORKDIR /app
 
 # Install dependencies
 COPY package.json* ./
-RUN npm install -g yarn
+# RUN npm install -g yarn
 RUN yarn install
 
 FROM builder AS application
