@@ -68,6 +68,10 @@ func (r *userRepository) Create(db *gorm.DB, t *model.User) (err error) {
 }
 
 func (r *userRepository) Update(db *gorm.DB, t *model.User) (err error) {
+	if len(t.Password) == 0 {
+		err = db.Omit("password").Save(t).Error
+		return
+	}
 	err = db.Save(t).Error
 	return
 }
