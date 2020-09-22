@@ -1,7 +1,8 @@
 <template>
   <section class="main">
-    <div class="container main-container is-white left-main">
+    <div class="container main-container left-main">
       <div class="left-container">
+        <user-profile :user="currentUser" />
         <div class="widget">
           <div class="widget-header">
             <nav class="breadcrumb">
@@ -23,9 +24,7 @@
             <ul v-if="favorites && favorites.length" class="article-list">
               <li v-for="favorite in favorites" :key="favorite.favoriteId">
                 <article v-if="favorite.deleted" class="article-item">
-                  <div class="article-summary">
-                    收藏内容失效!!!
-                  </div>
+                  <div class="article-summary">收藏内容失效!!!</div>
                 </article>
                 <article v-else class="article-item">
                   <div class="article-title">
@@ -59,24 +58,26 @@
 </template>
 
 <script>
+import UserProfile from '~/components/UserProfile'
 import UserCenterSidebar from '~/components/UserCenterSidebar'
 export default {
   middleware: 'authenticated',
   components: {
-    UserCenterSidebar
+    UserProfile,
+    UserCenterSidebar,
   },
   async asyncData({ $axios, params }) {},
   data() {
     return {
       favorites: [],
       cursor: 0,
-      hasMore: true
+      hasMore: true,
     }
   },
   computed: {
     currentUser() {
       return this.$store.state.user.current
-    }
+    },
   },
   mounted() {
     this.list()
@@ -85,8 +86,8 @@ export default {
     async list() {
       const ret = await this.$axios.get('/api/user/favorites', {
         params: {
-          cursor: this.cursor
-        }
+          cursor: this.cursor,
+        },
       })
       if (ret.results && ret.results.length) {
         this.favorites = this.favorites.concat(ret.results)
@@ -94,8 +95,8 @@ export default {
         this.hasMore = false
       }
       this.cursor = ret.cursor
-    }
-  }
+    },
+  },
 }
 </script>
 

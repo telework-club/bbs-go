@@ -1,7 +1,8 @@
 <template>
   <section class="main">
-    <div class="container main-container is-white left-main">
+    <div class="container main-container left-main">
       <div class="left-container">
+        <user-profile :user="currentUser" />
         <div class="widget">
           <div class="widget-header">
             <nav class="breadcrumb">
@@ -68,13 +69,7 @@
                 </div>
               </li>
             </ul>
-            <div
-              v-else
-              class="notification is-primary"
-              style="margin-top: 10px;"
-            >
-              暂无消息
-            </div>
+            <div v-else class="notification is-primary">暂无消息</div>
             <pagination
               :page="messagesPage.page"
               url-prefix="/user/messages?p="
@@ -88,31 +83,32 @@
 </template>
 
 <script>
+import UserProfile from '~/components/UserProfile'
 import UserCenterSidebar from '~/components/UserCenterSidebar'
 import Pagination from '~/components/Pagination'
 export default {
   middleware: 'authenticated',
-  components: { UserCenterSidebar, Pagination },
+  components: { UserProfile, UserCenterSidebar, Pagination },
   async asyncData({ $axios, query }) {
     const [messagesPage] = await Promise.all([
-      $axios.get('/api/user/messages?page=' + (query.p || 1))
+      $axios.get('/api/user/messages?page=' + (query.p || 1)),
     ])
     return {
-      messagesPage
+      messagesPage,
     }
   },
   data() {
     return {
       messages: [],
       cursor: 0,
-      hasMore: true
+      hasMore: true,
     }
   },
   computed: {
     currentUser() {
       return this.$store.state.user.current
-    }
-  }
+    },
+  },
 }
 </script>
 

@@ -1,15 +1,15 @@
 <template>
   <div>
     <comment-input
-      ref="input"
       v-if="mode === 'markdown'"
+      ref="input"
       :entity-id="entityId"
       :entity-type="entityType"
       @created="commentCreated"
     />
     <comment-text-input
-      ref="input"
       v-else
+      ref="input"
       :entity-id="entityId"
       :entity-type="entityType"
       @created="commentCreated"
@@ -34,33 +34,33 @@ export default {
   components: {
     CommentList,
     CommentInput,
-    CommentTextInput
+    CommentTextInput,
   },
   props: {
     mode: {
       type: String,
-      default: 'markdown'
+      default: 'markdown',
     },
     entityType: {
       type: String,
       default: '',
-      required: true
+      required: true,
     },
     entityId: {
       type: Number,
       default: 0,
-      required: true
+      required: true,
     },
     commentsPage: {
       type: Object,
       default() {
         return {}
-      }
+      },
     },
     showAd: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   methods: {
     commentCreated(data) {
@@ -68,7 +68,7 @@ export default {
     },
     reply(quote) {
       this.$refs.input.reply(quote)
-    }
-  }
+    },
+  },
 }
 </script>

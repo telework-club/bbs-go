@@ -16,7 +16,7 @@
       :data="results"
       highlight-current-row
       border
-      style="width: 100%;"
+      style="width: 100%"
     >
       <el-table-column prop="id" label="编号"></el-table-column>
       <el-table-column prop="userId" label="用户">
@@ -77,7 +77,7 @@ export default {
       listLoading: false,
       page: {},
       filters: {},
-      isShowLog: false
+      isShowLog: false,
     }
   },
   mounted() {
@@ -89,7 +89,7 @@ export default {
       me.listLoading = true
       const params = Object.assign(me.filters, {
         page: me.page.page,
-        limit: me.page.limit
+        limit: me.page.limit,
       })
       this.$axios
         .post('/api/admin/user-score/list', params)
@@ -111,8 +111,8 @@ export default {
     handleLimitChange(val) {
       this.page.limit = val
       this.list()
-    }
-  }
+    },
+  },
 }
 </script>
 

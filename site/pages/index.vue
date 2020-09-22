@@ -9,6 +9,7 @@
         </div>
       </div>
       <div class="right-container">
+        <check-in />
         <site-notice />
         <tweets-widget :tweets="newestTweets" />
         <score-rank :score-rank="scoreRank" />
@@ -19,6 +20,7 @@
 </template>
 
 <script>
+import CheckIn from '~/components/CheckIn'
 import SiteNotice from '~/components/SiteNotice'
 import ScoreRank from '~/components/ScoreRank'
 import FriendLinks from '~/components/FriendLinks'
@@ -29,13 +31,14 @@ import Pagination from '~/components/Pagination'
 
 export default {
   components: {
+    CheckIn,
     SiteNotice,
     ScoreRank,
     FriendLinks,
     TopicsNav,
     TopicList,
     TweetsWidget,
-    Pagination
+    Pagination,
   },
   async asyncData({ $axios, params }) {
     try {
@@ -44,13 +47,13 @@ export default {
         topicsPage,
         scoreRank,
         links,
-        newestTweets
+        newestTweets,
       ] = await Promise.all([
         $axios.get('/api/topic/nodes'),
         $axios.get('/api/topic/topics'),
         $axios.get('/api/user/score/rank'),
         $axios.get('/api/link/toplinks'),
-        $axios.get('/api/tweet/newest')
+        $axios.get('/api/tweet/newest'),
       ])
       return { nodes, topicsPage, scoreRank, links, newestTweets }
     } catch (e) {
@@ -67,7 +70,7 @@ export default {
           this.topicsPage.results = [data]
         }
       }
-    }
+    },
   },
   head() {
     return {
@@ -75,12 +78,12 @@ export default {
         {
           hid: 'description',
           name: 'description',
-          content: this.$siteDescription()
+          content: this.$siteDescription(),
         },
-        { hid: 'keywords', name: 'keywords', content: this.$siteKeywords() }
-      ]
+        { hid: 'keywords', name: 'keywords', content: this.$siteKeywords() },
+      ],
     }
-  }
+  },
 }
 </script>
 

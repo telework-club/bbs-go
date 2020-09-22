@@ -19,7 +19,7 @@
       :data="results"
       highlight-current-row
       border
-      style="width: 100%;"
+      style="width: 100%"
       @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection" width="55"></el-table-column>
@@ -172,7 +172,7 @@ export default {
         description: '',
         status: '',
         sortNo: '',
-        createTime: ''
+        createTime: '',
       },
       addFormVisible: false,
       addLoading: false,
@@ -184,11 +184,11 @@ export default {
         description: '',
         status: '',
         sortNo: '',
-        createTime: ''
+        createTime: '',
       },
       editFormVisible: false,
       editLoading: false,
-      roles: []
+      roles: [],
     }
   },
   mounted() {
@@ -206,7 +206,7 @@ export default {
       me.listLoading = true
       const params = Object.assign(me.filters, {
         page: me.page.page,
-        limit: me.page.limit
+        limit: me.page.limit,
       })
       this.$axios
         .post('/api/admin/topic-node/list', params)
@@ -230,7 +230,7 @@ export default {
       this.addForm = {
         name: '',
         description: '',
-        roles: []
+        roles: [],
       }
       this.addFormVisible = true
     },
@@ -254,7 +254,7 @@ export default {
         .get('/api/admin/topic-node/' + row.id)
         .then((data) => {
           this.editForm = Object.assign({}, data, {
-            roles: data.roles === '' ? [] : data.roles.split(',')
+            roles: data.roles === '' ? [] : data.roles.split(','),
           })
           this.editFormVisible = true
         })
@@ -278,8 +278,8 @@ export default {
 
     handleSelectionChange(val) {
       this.selectedRows = val
-    }
-  }
+    },
+  },
 }
 </script>
 

@@ -1,5 +1,5 @@
 # builder stage
-FROM node:10.16-slim AS builder
+FROM node:14.5-buster AS builder
 
 # Install build dependencies
 RUN apt-get -qq update && \
@@ -23,7 +23,8 @@ WORKDIR /app
 
 # Install dependencies
 COPY package.json* ./
-RUN npm install -g yarn
+
+# RUN npm install -g yarn
 RUN yarn install
 
 FROM builder AS application

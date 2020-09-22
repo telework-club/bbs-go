@@ -10,7 +10,7 @@
         <a href="/" class="navbar-item">
           <img
             :alt="config.siteTitle"
-            style="width:1.75rem"
+            style="width: 1.75rem"
             src="~/assets/images/logo.svg"
           />
         </a>
@@ -114,11 +114,11 @@ import MsgNotice from '~/components/MsgNotice'
 
 export default {
   components: {
-    MsgNotice
+    MsgNotice,
   },
   data() {
     return {
-      navbarActive: false
+      navbarActive: false,
     }
   },
   computed: {
@@ -130,7 +130,7 @@ export default {
     },
     config() {
       return this.$store.state.config.config
-    }
+    },
   },
   methods: {
     async signout() {
@@ -143,8 +143,8 @@ export default {
     },
     toggleNav() {
       this.navbarActive = !this.navbarActive
-    }
-  }
+    },
+  },
 }
 </script>
 

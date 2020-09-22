@@ -5,7 +5,7 @@
         <div>
           <img
             src="~/assets/images/logo.svg"
-            style="max-width: 100px;width:1.75rem;"
+            style="max-width: 100px; width: 1.75rem"
           />
         </div>
         <div class="description">
@@ -33,9 +33,9 @@ export default {
   props: {
     error: {
       type: Object,
-      default: null
-    }
-  }
+      default: null,
+    },
+  },
 }
 </script>
 

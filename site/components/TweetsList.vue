@@ -52,7 +52,7 @@
         </ul>
         <div class="pin-action-row">
           <div class="action-box">
-            <div @click="like(tweet)" class="like-action action">
+            <div class="like-action action" @click="like(tweet)">
               <div class="action-title-box">
                 <i class="iconfont icon-like" />
                 <span class="action-title">{{
@@ -84,8 +84,8 @@ export default {
       default() {
         return []
       },
-      required: false
-    }
+      required: false,
+    },
   },
   methods: {
     async like(tweet) {
@@ -100,15 +100,15 @@ export default {
               text: '去登录',
               onClick: (e, toastObject) => {
                 utils.toSignin()
-              }
-            }
+              },
+            },
           })
         } else {
           this.$toast.error(e.message || e)
         }
       }
-    }
-  }
+    },
+  },
 }
 </script>
 

@@ -21,7 +21,7 @@
           <div class="widget-content">
             <div class="field is-horizontal">
               <div class="field-body">
-                <div class="field" style="width:100%;">
+                <div class="field" style="width: 100%">
                   <input
                     v-model="postForm.title"
                     class="input"
@@ -37,7 +37,8 @@
                         v-for="node in nodes"
                         :key="node.nodeId"
                         :value="node.nodeId"
-                        >{{ node.name }}
+                      >
+                        {{ node.name }}
                       </option>
                     </select>
                   </div>
@@ -69,7 +70,7 @@
                   class="input"
                   type="text"
                   placeholder="验证码"
-                  style="max-width: 150px; margin-right: 20px;"
+                  style="max-width: 150px; margin-right: 20px"
                 />
                 <span class="icon is-small is-left">
                   <i class="iconfont icon-captcha" />
@@ -77,7 +78,7 @@
               </div>
               <div class="field">
                 <a @click="showCaptcha">
-                  <img :src="captchaUrl" style="height: 40px;" />
+                  <img :src="captchaUrl" style="height: 40px" />
                 </a>
               </div>
             </div>
@@ -87,8 +88,8 @@
                 <a
                   :class="{ 'is-loading': publishing }"
                   :disabled="publishing"
-                  @click="submitCreate"
                   class="button is-success"
+                  @click="submitCreate"
                   >发表话题</a
                 >
               </div>
@@ -114,7 +115,7 @@ export default {
   components: {
     TagInput,
     MarkdownHelp,
-    MarkdownEditor
+    MarkdownEditor,
   },
   async asyncData({ $axios, query, store }) {
     // 节点
@@ -135,8 +136,8 @@ export default {
     return {
       nodes,
       postForm: {
-        nodeId: currentNode ? currentNode.nodeId : 0
-      }
+        nodeId: currentNode ? currentNode.nodeId : 0,
+      },
     }
   },
   data() {
@@ -149,8 +150,8 @@ export default {
         nodeId: 0,
         title: '',
         tags: [],
-        content: ''
-      }
+        content: '',
+      },
     }
   },
   computed: {
@@ -159,7 +160,7 @@ export default {
     },
     config() {
       return this.$store.state.config.config
-    }
+    },
   },
   mounted() {
     this.showCaptcha()
@@ -189,14 +190,14 @@ export default {
           nodeId: this.postForm.nodeId,
           title: this.postForm.title,
           content: this.postForm.content,
-          tags: this.postForm.tags ? this.postForm.tags.join(',') : ''
+          tags: this.postForm.tags ? this.postForm.tags.join(',') : '',
         })
         this.$refs.mdEditor.clearCache()
         this.$toast.success('提交成功', {
           duration: 1000,
           onComplete() {
             utils.linkTo('/topic/' + topic.topicId)
-          }
+          },
         })
       } catch (e) {
         await this.showCaptcha()
@@ -209,8 +210,8 @@ export default {
         try {
           const ret = await this.$axios.get('/api/captcha/request', {
             params: {
-              captchaId: this.captchaId || ''
-            }
+              captchaId: this.captchaId || '',
+            },
           })
           this.captchaId = ret.captchaId
           this.captchaUrl = ret.captchaUrl
@@ -218,13 +219,13 @@ export default {
           this.$toast.error(e.message || e)
         }
       }
-    }
+    },
   },
   head() {
     return {
-      title: this.$siteTitle('发表话题')
+      title: this.$siteTitle('发表话题'),
     }
-  }
+  },
 }
 </script>
 

@@ -8,9 +8,9 @@
         <el-form-item>
           <el-select
             v-model="filters.opType"
-            @change="list"
             clearable
             placeholder="操作类型"
+            @change="list"
           >
             <el-option label="添加" value="create"></el-option>
             <el-option label="删除" value="delete"></el-option>
@@ -18,7 +18,7 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button @click="list" type="primary">查询</el-button>
+          <el-button type="primary" @click="list">查询</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -28,7 +28,7 @@
       :data="results"
       highlight-current-row
       stripe
-      style="width: 100%;"
+      style="width: 100%"
     >
       <el-table-column type="expand">
         <template slot-scope="scope">
@@ -55,9 +55,9 @@
         :current-page="page.page"
         :page-size="page.limit"
         :total="page.total"
+        layout="total, sizes, prev, pager, next, jumper"
         @current-change="handlePageChange"
         @size-change="handleLimitChange"
-        layout="total, sizes, prev, pager, next, jumper"
       ></el-pagination>
     </div>
   </section>
@@ -71,7 +71,7 @@ export default {
       results: [],
       listLoading: false,
       page: {},
-      filters: {}
+      filters: {},
     }
   },
   mounted() {
@@ -83,7 +83,7 @@ export default {
       me.listLoading = true
       const params = Object.assign(me.filters, {
         page: me.page.page,
-        limit: me.page.limit
+        limit: me.page.limit,
       })
       this.$axios
         .post('/api/admin/operate-log/list', params)
@@ -102,8 +102,8 @@ export default {
     handleLimitChange(val) {
       this.page.limit = val
       this.list()
-    }
-  }
+    },
+  },
 }
 </script>
 

@@ -2,14 +2,10 @@
   <section class="main">
     <div class="container">
       <div class="widget">
-        <div class="widget-header">
-          关于
-        </div>
+        <div class="widget-header">关于</div>
         <div class="widget-content content">
           <h2>简介</h2>
-          <p>
-            BBS-GO&nbsp;是一款基于Go语言研发的精美小巧的开源社区论坛系统。
-          </p>
+          <p>BBS-GO&nbsp;是一款基于Go语言研发的精美小巧的开源社区论坛系统。</p>
 
           <p>
             Telework在BBS-Go的基础上，对功能进行了一部分修改，形成了现在的社区系统。
@@ -49,9 +45,9 @@
 export default {
   head() {
     return {
-      title: this.$siteTitle('关于')
+      title: this.$siteTitle('关于'),
     }
-  }
+  },
 }
 </script>
 
