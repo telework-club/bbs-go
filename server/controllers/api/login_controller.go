@@ -13,6 +13,17 @@ import (
 	"bbs-go/services"
 )
 
+type forgotPasswordViewModel struct {
+	Email string `json:"email"`
+}
+
+type resetPWViewModel struct {
+	Password string `json:"password"`
+	Repeat   string `json:"repeat"`
+	Token    string `json:"token"`
+	Email    string `json:"email"`
+}
+
 type LoginController struct {
 	Ctx iris.Context
 }
@@ -56,6 +67,28 @@ func (c *LoginController) PostSignin() *simple.JsonResult {
 		return simple.JsonErrorMsg(err.Error())
 	}
 	return c.GenerateLoginResult(user, ref)
+}
+
+func (c *LoginController) PostForgotPassword() *simple.JsonResult {
+	var viewmodel forgotPasswordViewModel
+	if err := c.Ctx.ReadJSON(&viewmodel); err != nil {
+		return simple.JsonErrorMsg(err.Error())
+	}
+	if err := services.UserService.SendPasswordResetEmail(viewmodel.Email); err != nil {
+		return simple.JsonErrorMsg(err.Error())
+	}
+	return simple.JsonSuccess()
+}
+
+func (c *LoginController) PostResetPassword() *simple.JsonResult {
+	var viewmodel resetPWViewModel
+	if err := c.Ctx.ReadJSON(&viewmodel); err != nil {
+		return simple.JsonErrorMsg(err.Error())
+	}
+	if err := services.UserService.ResetPassword(viewmodel.Email, viewmodel.Password, viewmodel.Repeat, viewmodel.Token); err != nil {
+		return simple.JsonErrorMsg(err.Error())
+	}
+	return simple.JsonSuccess()
 }
 
 // 退出登录

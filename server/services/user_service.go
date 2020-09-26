@@ -8,6 +8,7 @@ import (
 	"bbs-go/model/constants"
 	"database/sql"
 	"errors"
+	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -30,6 +31,8 @@ import (
 
 // 邮箱验证邮件有效期（小时）
 const emailVerifyExpireHour = 24
+
+const resetTokenExpiredAfterHour = 1
 
 var UserService = newUserService()
 
@@ -497,6 +500,68 @@ func (s *userService) VerifyEmail(userId int64, token string) error {
 		}
 		cache.UserCache.Invalidate(emailCode.UserId)
 		return repositories.EmailCodeRepository.UpdateColumn(tx, emailCode.Id, "used", true)
+	})
+}
+
+func (s *userService) ResetPassword(email string, password string, repeatPassword string, token string) error {
+	if password != repeatPassword {
+		return errors.New("二次密码输入不一致")
+	}
+	emailCode := EmailCodeService.FindOne(simple.NewSqlCnd().Eq("token", token))
+	if emailCode == nil || emailCode.Used || emailCode.Email != email {
+		return errors.New("非法请求")
+	}
+	if simple.TimeFromTimestamp(emailCode.CreateTime).Add(time.Hour * time.Duration(resetTokenExpiredAfterHour)).Before(time.Now()) {
+		return errors.New("非法请求")
+	}
+	return simple.Tx(simple.DB(), func(tx *gorm.DB) error {
+		if err := repositories.UserRepository.UpdateColumn(tx, emailCode.UserId, "password", simple.EncodePassword(password)); err != nil {
+			return err
+		}
+		cache.UserCache.Invalidate(emailCode.UserId)
+		return repositories.EmailCodeRepository.UpdateColumn(tx, emailCode.Id, "used", true)
+	})
+}
+
+// SendPasswordResetEmail 发送密码重置邮件邮件
+func (s *userService) SendPasswordResetEmail(userEmail string) error {
+	user := s.GetByEmail(userEmail)
+	if user == nil {
+		return errors.New("用户不存在")
+	}
+	if !user.EmailVerified {
+		return errors.New("用户邮箱未验证")
+	}
+	if err := validate.IsEmail(user.Email.String); err != nil {
+		return err
+	}
+	var (
+		token     = simple.UUID()
+		url       = urls.AbsUrl(fmt.Sprintf("/user/email/reset?token=%s&email=%s", token, user.Email.String))
+		link      = &model.ActionLink{Title: "点击这里重置密码>>", Url: url}
+		siteTitle = cache.SysConfigCache.GetValue(constants.SysConfigSiteTitle)
+		subject   = "重置密码 - " + siteTitle
+		title     = "重置密码 - " + siteTitle
+		content   = "该邮件用于重置你在 " + siteTitle + " 中的密码，请在" + strconv.Itoa(resetTokenExpiredAfterHour) + "小时内完成验证。验证链接：" + url
+	)
+	return simple.Tx(simple.DB(), func(tx *gorm.DB) error {
+		if err := repositories.EmailCodeRepository.Create(tx, &model.EmailCode{
+			Model:      model.Model{},
+			UserId:     user.Id,
+			Email:      user.Email.String,
+			Code:       "",
+			Token:      token,
+			Title:      title,
+			Content:    content,
+			Used:       false,
+			CreateTime: simple.NowTimestamp(),
+		}); err != nil {
+			return nil
+		}
+		if err := email.SendTemplateEmail(user.Email.String, subject, title, content, "", link); err != nil {
+			return err
+		}
+		return nil
 	})
 }
 
