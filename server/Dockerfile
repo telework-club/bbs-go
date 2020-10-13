@@ -15,7 +15,7 @@ ENV TZ=Asia/Shanghai
 
 WORKDIR /app
 
-ENV GO111MODULE=off
+ENV GO111MODULE=auto
 ENV ROOT_DIR=/app
 
 # download and cache go dependencies
@@ -24,7 +24,7 @@ ENV ROOT_DIR=/app
 
 COPY . .
 
-RUN go build -o bbs-go-server
+RUN go build -mod=vendor -o bbs-go-server
 
 # application stage
 FROM debian:stretch-slim as application
