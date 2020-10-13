@@ -15,12 +15,12 @@ ENV TZ=Asia/Shanghai
 
 WORKDIR /app
 
-ENV GO111MODULE=on
+ENV GO111MODULE=off
 ENV ROOT_DIR=/app
 
 # download and cache go dependencies
-COPY go.* ./
-RUN GOPROXY="https://goproxy.cn" go mod download
+# COPY go.* ./
+# RUN GOPROXY="https://goproxy.cn" go mod download
 
 COPY . .
 
