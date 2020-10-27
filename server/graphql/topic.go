@@ -249,14 +249,24 @@ func InitTopicType() {
 						Eq("node_id", nodeId).
 						Eq("status", constants.StatusOk).
 						Page(1, pageNum).Desc("create_time"))
-					// var result []TopicViewModel
-					// linq.From(topics).SelectT(func(item model.Topic) TopicViewModel {
-					// 	return TopicViewModel{
-					// 		Id:      int(item.Id),
-					// 		Title:   item.Title,
-					// 		Content: item.Content,
-					// 	}
-					// }).ToSlice(&result)
+					return topics, nil
+				},
+			},
+			"recentlyTopics": &graphql.Field{
+				Type:        graphql.NewList(TopicType),
+				Description: "Query recent 10 topics ",
+				Args: graphql.FieldConfigArgument{
+					"page": &graphql.ArgumentConfig{
+						Type: graphql.NewNonNull(graphql.Int),
+					},
+				},
+				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+					pageNum := 10
+					page := p.Args["page"].(int)
+					if page <= 0 {
+						page = 1
+					}
+					topics := services.TopicService.Find(simple.NewSqlCnd().Where("status = ?", constants.StatusOk).Desc("id").Page(page, pageNum))
 					return topics, nil
 				},
 			},
