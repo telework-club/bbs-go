@@ -1,6 +1,7 @@
 package app
 
 import (
+	"context"
 	"net/http"
 	"os"
 	"os/signal"
@@ -114,11 +115,14 @@ func InitIris() {
 			ctx.EndRequest()
 			return
 		}
+		root := make(graph.RootType)
 		params := graphql.Params{
 			Schema:         *graph.ForumSchema,
 			RequestString:  options.Query,
 			VariableValues: options.Variables,
 			OperationName:  options.OperationName,
+			Context:        context.Background(),
+			RootObject:     root,
 		}
 		result := graphql.Do(params)
 		_, _ = ctx.JSON(result)
