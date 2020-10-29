@@ -7,9 +7,11 @@ import (
 	"bbs-go/services"
 	"fmt"
 
+	"github.com/88250/lute"
 	"github.com/ahmetb/go-linq"
 	"github.com/graphql-go/graphql"
 	"github.com/mlogclub/simple"
+	"github.com/spf13/cast"
 )
 
 var (
@@ -22,6 +24,7 @@ type ContextKey string
 const (
 	CtxCommentsType ContextKey = "comments"
 	CtxUsersType    ContextKey = "users"
+	CtxTopicType    string     = "topic-content-type"
 )
 
 type CommentsMap map[int64]model.Comment
@@ -33,6 +36,18 @@ type RootType map[string]interface{}
 // 	Title   string
 // 	Content string
 // }
+
+func chooseContentType(p *graphql.ResolveParams, content string) string {
+	root := p.Info.RootValue.(map[string]interface{})
+	contentType := cast.ToInt(root[CtxTopicType])
+	switch contentType {
+	case 1:
+		luteEngine := lute.New()
+		return luteEngine.MarkdownStr("topic", content)
+	default:
+		return content
+	}
+}
 
 func getSharedData(key ContextKey, id int64, params *graphql.ResolveParams) (dict interface{}, ok bool) {
 	dict = nil
@@ -46,27 +61,28 @@ func getSharedData(key ContextKey, id int64, params *graphql.ResolveParams) (dic
 }
 
 func InitTopicType() {
+	topicContentTypeEnum := graphql.NewEnum(graphql.EnumConfig{
+		Name: "TopicContentType",
+		Values: graphql.EnumValueConfigMap{
+			"MD": &graphql.EnumValueConfig{
+				Value: 0,
+			},
+			"HTML": &graphql.EnumValueConfig{
+				Value: 1,
+			},
+		},
+	})
 	userType := graphql.NewObject(graphql.ObjectConfig{
 		Name:        "User",
 		Description: "User",
 		Fields: graphql.Fields{
 			"id": &graphql.Field{
-				Type: graphql.Int,
-				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-					if model, ok := p.Source.(model.User); ok {
-						return model.Id, nil
-					}
-					return nil, nil
-				},
+				Type:    graphql.Int,
+				Resolve: modelFieldResolver("Id"),
 			},
 			"nickname": &graphql.Field{
-				Type: graphql.String,
-				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-					if model, ok := p.Source.(model.User); ok {
-						return model.Nickname, nil
-					}
-					return nil, nil
-				},
+				Type:    graphql.String,
+				Resolve: modelFieldResolver("Nickname"),
 			},
 			"avatar": &graphql.Field{
 				Type: graphql.String,
@@ -76,6 +92,20 @@ func InitTopicType() {
 					}
 					return nil, nil
 				},
+			},
+		},
+	})
+	topicNodeType := graphql.NewObject(graphql.ObjectConfig{
+		Name:        "TopicNode",
+		Description: "Topic node",
+		Fields: graphql.Fields{
+			"id": &graphql.Field{
+				Type:    graphql.Int,
+				Resolve: modelFieldResolver("id"),
+			},
+			"name": &graphql.Field{
+				Type:    graphql.String,
+				Resolve: modelFieldResolver("Name"),
 			},
 		},
 	})
@@ -105,7 +135,7 @@ func InitTopicType() {
 				Type: graphql.String,
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 					if model, ok := p.Source.(model.Comment); ok {
-						return model.Content, nil
+						return chooseContentType(&p, model.Content), nil
 					}
 					return nil, nil
 				},
@@ -171,7 +201,7 @@ func InitTopicType() {
 				Type: graphql.String,
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 					if model, ok := p.Source.(model.Topic); ok {
-						return model.Content, nil
+						return chooseContentType(&p, model.Content), nil
 					}
 					return nil, nil
 				},
@@ -259,6 +289,10 @@ func InitTopicType() {
 					"page": &graphql.ArgumentConfig{
 						Type: graphql.NewNonNull(graphql.Int),
 					},
+					"type": &graphql.ArgumentConfig{
+						Type:         topicContentTypeEnum,
+						DefaultValue: "MD",
+					},
 				},
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 					pageNum := 10
@@ -267,13 +301,35 @@ func InitTopicType() {
 						page = 1
 					}
 					topics := services.TopicService.Find(simple.NewSqlCnd().Where("status = ?", constants.StatusOk).Desc("id").Page(page, pageNum))
+					root := p.Info.RootValue.(map[string]interface{})
+					root[CtxTopicType] = p.Args["type"]
 					return topics, nil
+				},
+			},
+			"topicNodes": &graphql.Field{
+				Type:        graphql.NewList(topicNodeType),
+				Description: "query topic node",
+				Args: graphql.FieldConfigArgument{
+					"editable": &graphql.ArgumentConfig{
+						Type:         graphql.Boolean,
+						DefaultValue: false,
+					},
+				},
+				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+					isOnlyEditable := p.Args["editable"].(bool)
+					if isOnlyEditable {
+
+					}
+					return services.TopicNodeService.GetNodes(), nil
 				},
 			},
 		},
 	})
 	allSchema, _ := graphql.NewSchema(graphql.SchemaConfig{
 		Query: queryType,
+		Types: []graphql.Type{
+			topicContentTypeEnum,
+		},
 	})
 	ForumSchema = &allSchema
 }

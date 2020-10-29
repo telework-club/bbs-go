@@ -5,6 +5,7 @@ go 1.14
 replace github.com/go-check/check => github.com/go-check/check v0.0.0-20180628173108-788fd7840127
 
 require (
+	github.com/88250/lute v1.6.5
 	github.com/PuerkitoBio/goquery v1.5.0
 	github.com/ahmetb/go-linq v3.0.0+incompatible
 	github.com/ajg/form v1.5.1 // indirect
@@ -26,7 +27,6 @@ require (
 	github.com/jordan-wright/email v0.0.0-20190819015918-041e0cec78b0
 	github.com/k0kubun/colorstring v0.0.0-20150214042306-9440f1994b88 // indirect
 	github.com/kataras/iris/v12 v12.1.8
-	github.com/mattn/go-colorable v0.1.4 // indirect
 	github.com/mlogclub/simple v1.0.67
 	github.com/moul/http2curl v1.0.0 // indirect
 	github.com/nats-io/nats-server/v2 v2.1.2 // indirect
@@ -35,6 +35,7 @@ require (
 	github.com/sergi/go-diff v1.1.0 // indirect
 	github.com/sirupsen/logrus v1.4.2
 	github.com/smartystreets/goconvey v1.6.4 // indirect
+	github.com/spf13/cast v1.3.0
 	github.com/tidwall/gjson v1.3.4
 	github.com/valyala/fasthttp v1.8.0 // indirect
 	github.com/xeipuuv/gojsonschema v1.2.0 // indirect
