@@ -138,6 +138,7 @@ type Topic struct {
 	LastCommentTime int64  `gorm:"index:idx_topic_last_comment_time" json:"lastCommentTime" form:"lastCommentTime"` // 最后回复时间
 	CreateTime      int64  `gorm:"index:idx_topic_create_time" json:"createTime" form:"createTime"`                 // 创建时间
 	ExtraData       string `gorm:"type:text" json:"extraData" form:"extraData"`                                     // 扩展数据
+	IsPin           bool   `gorm:"not null;default:false"`
 }
 
 // 主题标签

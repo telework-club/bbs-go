@@ -256,9 +256,14 @@ func (c *TopicController) GetTopics() *simple.JsonResult {
 
 	topics, paging := services.TopicService.FindPageByCnd(simple.NewSqlCnd().
 		Eq("status", constants.StatusOk).
+		NotEq("is_pin", true).
 		Page(page, 20).Desc("last_comment_time"))
 
-	return simple.JsonPageData(render.BuildSimpleTopics(topics), paging)
+	// return simple.JsonPageData(render.BuildSimpleTopics(topics), paging)
+	pinedTopics := services.TopicService.Find(simple.NewSqlCnd().Eq("is_pin", true).Desc("id"))
+	var result []model.Topic
+	linq.From(pinedTopics).Union(linq.From(topics)).ToSlice(&result)
+	return simple.JsonPageData(render.BuildSimpleTopics(result), paging)
 }
 
 // 节点帖子列表
@@ -268,9 +273,12 @@ func (c *TopicController) GetNodeTopics() *simple.JsonResult {
 	topics, paging := services.TopicService.FindPageByCnd(simple.NewSqlCnd().
 		Eq("node_id", nodeId).
 		Eq("status", constants.StatusOk).
+		NotEq("is_pin", true).
 		Page(page, 20).Desc("last_comment_time"))
-
-	return simple.JsonPageData(render.BuildSimpleTopics(topics), paging)
+	pinedTopics := services.TopicService.Find(simple.NewSqlCnd().Eq("is_pin", true).Desc("id"))
+	var result []model.Topic
+	linq.From(pinedTopics).Union(linq.From(topics)).ToSlice(&result)
+	return simple.JsonPageData(render.BuildSimpleTopics(result), paging)
 }
 
 // 标签帖子列表
