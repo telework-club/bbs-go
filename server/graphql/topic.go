@@ -25,6 +25,7 @@ const (
 	CtxCommentsType ContextKey = "comments"
 	CtxUsersType    ContextKey = "users"
 	CtxTopicType    string     = "topic-content-type"
+	UserCache       string     = "user-cache"
 )
 
 type CommentsMap map[int64]model.Comment
@@ -58,6 +59,85 @@ func getSharedData(key ContextKey, id int64, params *graphql.ResolveParams) (dic
 		return
 	}
 	return
+}
+
+func queryDataFromCache(params *graphql.ResolveParams, key string, id int64) (data interface{}, ok bool) {
+	if root, status := params.Info.RootValue.(map[string]interface{}); status {
+		if result, in := root[key]; in {
+			cache := result.(QueryCache)
+			dataInCache := cache.Get(id)
+			if len(dataInCache) > 0 {
+				ok = true
+				data = dataInCache[0]
+				return
+			}
+		}
+	}
+	return
+}
+
+func setKeysToCache(params *graphql.ResolveParams, key string, ids ...int64) {
+	if root, status := params.Info.RootValue.(map[string]interface{}); status {
+		if result, in := root[key]; in {
+			cache := result.(QueryCache)
+			cache.Set(ids...)
+		}
+	}
+}
+
+type LazyQueryFn func(ids ...int64) map[int64]interface{}
+
+type LazyQuery struct {
+	ids          *linq.Query
+	noQueriedIds *linq.Query
+	cache        map[int64]interface{}
+	Query        LazyQueryFn
+}
+
+func (query LazyQuery) Set(ids ...int64) {
+	newQuery := linq.From(ids)
+	notIn := newQuery.Except(*query.ids)
+	all := query.ids.Union(notIn)
+	noQuery := query.noQueriedIds.Union(notIn)
+	query.ids = &all
+	query.noQueriedIds = &noQuery
+}
+
+func (query LazyQuery) Get(ids ...int64) []interface{} {
+	result := make([]interface{}, 0)
+	idsQuery := linq.From(ids)
+	needQuery := idsQuery.Intersect(*query.noQueriedIds)
+	if needQuery.Count() != 0 {
+		var need []int64
+		needQuery.ToSlice(&need)
+		queryResult := query.Query(need...)
+		for key, value := range queryResult {
+			query.cache[key] = value
+		}
+	}
+	for _, id := range ids {
+		if item, ok := query.cache[id]; ok {
+			result = append(result, item)
+		}
+	}
+	return result
+}
+
+type QueryCache interface {
+	Get(ids ...int64) []interface{}
+	Set(ids ...int64)
+}
+
+func initLazyQuery(query LazyQueryFn) LazyQuery {
+	lq := LazyQuery{
+		cache: make(map[int64]interface{}),
+		Query: query,
+	}
+	q := linq.From(make([]int64, 0))
+	lq.ids = &q
+	q = linq.From(make([]int64, 0))
+	lq.noQueriedIds = &q
+	return lq
 }
 
 func InitTopicType() {
@@ -144,12 +224,8 @@ func InitTopicType() {
 				Type: userType,
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 					if data, ok := p.Source.(model.Comment); ok {
-						if users, ok := getSharedData(CtxUsersType, data.EntityId, &p); ok {
-							if uMap, ok := users.(UsersMap); ok {
-								if user, ok := uMap[data.UserId]; ok {
-									return user, nil
-								}
-							}
+						if user, ok := queryDataFromCache(&p, UserCache, data.UserId); ok {
+							return user, nil
 						}
 					}
 					return nil, nil
@@ -224,6 +300,17 @@ func InitTopicType() {
 					return nil, nil
 				},
 			},
+			"user": &graphql.Field{
+				Type: userType,
+				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+					if data, ok := p.Source.(model.Topic); ok {
+						if user, ok := queryDataFromCache(&p, UserCache, data.UserId); ok {
+							return user, nil
+						}
+					}
+					return nil, nil
+				},
+			},
 			"comments": &graphql.Field{
 				Type: graphql.NewList(commentType),
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
@@ -240,14 +327,7 @@ func InitTopicType() {
 						root := p.Info.RootValue.(map[string]interface{})
 						key := fmt.Sprintf("%s-%d", CtxCommentsType, data.Id)
 						root[key] = commentsMap
-						allUsers := services.UserService.Find(simple.NewSqlCnd().In("id", users))
-						usersMap := make(UsersMap)
-						linq.From(allUsers).
-							SelectT(func(item model.User) linq.KeyValue {
-								return linq.KeyValue{Key: item.Id, Value: item}
-							}).
-							ToMap(&usersMap)
-						root[fmt.Sprintf("%s-%d", CtxUsersType, data.Id)] = usersMap
+						setKeysToCache(&p, UserCache, users...)
 						return comments, nil
 					}
 					return nil, nil
@@ -302,6 +382,16 @@ func InitTopicType() {
 					}
 					topics := services.TopicService.Find(simple.NewSqlCnd().Where("status = ?", constants.StatusOk).Desc("id").Page(page, pageNum))
 					root := p.Info.RootValue.(map[string]interface{})
+					userCache := initLazyQuery(func(ids ...int64) map[int64]interface{} {
+						users := make(map[int64]interface{})
+						allUsers := services.UserService.Find(simple.NewSqlCnd().In("id", ids))
+						linq.From(allUsers).SelectT(func(user model.User) linq.KeyValue { return linq.KeyValue{Key: user.Id, Value: user} }).ToMap(&users)
+						return users
+					})
+					var userIds []int64
+					linq.From(topics).SelectT(func(topic model.Topic) int64 { return topic.UserId }).ToSlice(&userIds)
+					userCache.Set(userIds...)
+					root[UserCache] = userCache
 					root[CtxTopicType] = p.Args["type"]
 					return topics, nil
 				},
