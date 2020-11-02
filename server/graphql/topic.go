@@ -64,7 +64,7 @@ func getSharedData(key ContextKey, id int64, params *graphql.ResolveParams) (dic
 func queryDataFromCache(params *graphql.ResolveParams, key string, id int64) (data interface{}, ok bool) {
 	if root, status := params.Info.RootValue.(map[string]interface{}); status {
 		if result, in := root[key]; in {
-			cache := result.(QueryCache)
+			cache := result.(*LazyQuery)
 			dataInCache := cache.Get(id)
 			if len(dataInCache) > 0 {
 				ok = true
@@ -79,7 +79,7 @@ func queryDataFromCache(params *graphql.ResolveParams, key string, id int64) (da
 func setKeysToCache(params *graphql.ResolveParams, key string, ids ...int64) {
 	if root, status := params.Info.RootValue.(map[string]interface{}); status {
 		if result, in := root[key]; in {
-			cache := result.(QueryCache)
+			cache := result.(*LazyQuery)
 			cache.Set(ids...)
 		}
 	}
@@ -88,32 +88,37 @@ func setKeysToCache(params *graphql.ResolveParams, key string, ids ...int64) {
 type LazyQueryFn func(ids ...int64) map[int64]interface{}
 
 type LazyQuery struct {
-	ids          *linq.Query
-	noQueriedIds *linq.Query
+	ids          []int64
+	noQueriedIds []int64
 	cache        map[int64]interface{}
 	Query        LazyQueryFn
 }
 
-func (query LazyQuery) Set(ids ...int64) {
+func (query *LazyQuery) Set(ids ...int64) {
 	newQuery := linq.From(ids)
-	notIn := newQuery.Except(*query.ids)
-	all := query.ids.Union(notIn)
-	noQuery := query.noQueriedIds.Union(notIn)
-	query.ids = &all
-	query.noQueriedIds = &noQuery
+	current := linq.From(query.ids)
+	notIn := newQuery.Except(current)
+	all := current.Union(notIn)
+	currentWaiting := linq.From(query.noQueriedIds)
+	noQuery := currentWaiting.Union(notIn)
+	all.Distinct().ToSlice(&query.ids)
+	noQuery.Distinct().ToSlice(&query.noQueriedIds)
 }
 
-func (query LazyQuery) Get(ids ...int64) []interface{} {
+func (query *LazyQuery) Get(ids ...int64) []interface{} {
 	result := make([]interface{}, 0)
 	idsQuery := linq.From(ids)
-	needQuery := idsQuery.Intersect(*query.noQueriedIds)
+	currentWaiting := linq.From(query.noQueriedIds)
+	needQuery := idsQuery.Intersect(currentWaiting)
 	if needQuery.Count() != 0 {
 		var need []int64
 		needQuery.ToSlice(&need)
-		queryResult := query.Query(need...)
+		queryResult := query.Query(query.noQueriedIds...)
+		query.noQueriedIds = make([]int64, 0)
 		for key, value := range queryResult {
 			query.cache[key] = value
 		}
+
 	}
 	for _, id := range ids {
 		if item, ok := query.cache[id]; ok {
@@ -128,16 +133,14 @@ type QueryCache interface {
 	Set(ids ...int64)
 }
 
-func initLazyQuery(query LazyQueryFn) LazyQuery {
+func initLazyQuery(query LazyQueryFn) *LazyQuery {
 	lq := LazyQuery{
-		cache: make(map[int64]interface{}),
-		Query: query,
+		cache:        make(map[int64]interface{}),
+		Query:        query,
+		ids:          make([]int64, 0),
+		noQueriedIds: make([]int64, 0),
 	}
-	q := linq.From(make([]int64, 0))
-	lq.ids = &q
-	q = linq.From(make([]int64, 0))
-	lq.noQueriedIds = &q
-	return lq
+	return &lq
 }
 
 func InitTopicType() {
@@ -316,6 +319,9 @@ func InitTopicType() {
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 					if data, ok := p.Source.(model.Topic); ok {
 						comments := services.CommentService.Find(simple.NewSqlCnd().Eq("entity_id", data.Id))
+						if len(comments) == 0 {
+							return nil, nil
+						}
 						commentsMap := make(CommentsMap)
 						users := make([]int64, 0)
 						linq.From(comments).
