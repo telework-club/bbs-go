@@ -64,12 +64,13 @@ func getSharedData(key ContextKey, id int64, params *graphql.ResolveParams) (dic
 func queryDataFromCache(params *graphql.ResolveParams, key string, id int64) (data interface{}, ok bool) {
 	if root, status := params.Info.RootValue.(map[string]interface{}); status {
 		if result, in := root[key]; in {
-			cache := result.(*LazyQuery)
-			dataInCache := cache.Get(id)
-			if len(dataInCache) > 0 {
-				ok = true
-				data = dataInCache[0]
-				return
+			if cache, in := result.(QueryCache); in {
+				dataInCache := cache.Get(id)
+				if len(dataInCache) > 0 {
+					ok = true
+					data = dataInCache[0]
+					return
+				}
 			}
 		}
 	}
@@ -79,10 +80,16 @@ func queryDataFromCache(params *graphql.ResolveParams, key string, id int64) (da
 func setKeysToCache(params *graphql.ResolveParams, key string, ids ...int64) {
 	if root, status := params.Info.RootValue.(map[string]interface{}); status {
 		if result, in := root[key]; in {
-			cache := result.(*LazyQuery)
-			cache.Set(ids...)
+			if cache, in := result.(QueryCache); in {
+				cache.Set(ids...)
+			}
 		}
 	}
+}
+
+type QueryCache interface {
+	Get(ids ...int64) []interface{}
+	Set(ids ...int64)
 }
 
 type LazyQueryFn func(ids ...int64) map[int64]interface{}
@@ -118,7 +125,6 @@ func (query *LazyQuery) Get(ids ...int64) []interface{} {
 		for key, value := range queryResult {
 			query.cache[key] = value
 		}
-
 	}
 	for _, id := range ids {
 		if item, ok := query.cache[id]; ok {
@@ -128,12 +134,7 @@ func (query *LazyQuery) Get(ids ...int64) []interface{} {
 	return result
 }
 
-type QueryCache interface {
-	Get(ids ...int64) []interface{}
-	Set(ids ...int64)
-}
-
-func initLazyQuery(query LazyQueryFn) *LazyQuery {
+func initLazyQuery(query LazyQueryFn) QueryCache {
 	lq := LazyQuery{
 		cache:        make(map[int64]interface{}),
 		Query:        query,
