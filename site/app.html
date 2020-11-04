@@ -12,4 +12,12 @@
 <link rel="stylesheet" href="//cdn.staticfile.org/highlight.js/9.15.10/styles/github.min.css">
 <script src="//cdn.staticfile.org/highlight.js/9.15.10/highlight.min.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>
+<script>
+  var query = new URLSearchParams(location.search);
+  var source = query.get('source');
+  if (source && window.localStorage){
+    window.localStorage.setItem('source', source);
+  }
+
+</script>
 </html>
