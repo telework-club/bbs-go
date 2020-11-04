@@ -123,6 +123,7 @@ export default {
   asyncData({ params, query }) {
     return {
       ref: query.ref,
+      flag: query.flag,
     }
   },
   data() {
@@ -150,6 +151,7 @@ export default {
           password: this.password,
           rePassword: this.rePassword,
           ref: this.ref,
+          flag: this.flag,
         })
         if (this.ref) {
           // 跳到登录前

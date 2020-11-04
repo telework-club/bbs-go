@@ -72,6 +72,10 @@ type Config struct {
 		Password string `yaml:"Password"`
 		SSL      bool   `yaml:"SSL"`
 	} `yaml:"Smtp"`
+
+	Analyze struct {
+		SignupAPI string `yaml:"SignupAPI"`
+	} `yaml:"Analyze"`
 }
 
 func Init(filename string) {

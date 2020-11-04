@@ -154,7 +154,7 @@ func (s *userService) GetByUsername(username string) *model.User {
 }
 
 // SignUp 注册
-func (s *userService) SignUp(username, email, nickname, password, rePassword string) (*model.User, error) {
+func (s *userService) SignUp(username, email, nickname, password, rePassword string, flag string) (*model.User, error) {
 	username = strings.TrimSpace(username)
 	email = strings.TrimSpace(email)
 	nickname = strings.TrimSpace(nickname)
@@ -221,6 +221,14 @@ func (s *userService) SignUp(username, email, nickname, password, rePassword str
 	if err != nil {
 		return nil, err
 	}
+
+	if len(flag) > 0 {
+		go func(id int64, source string) {
+			analyze := model.SignupAnalyze{Source: source, UserId: id}
+			simple.DB().Model(&analyze).Create(&analyze)
+		}(user.Id, flag)
+
+	}
 	return user, nil
 }
 
@@ -247,7 +255,7 @@ func (s *userService) SignIn(username, password string) (*model.User, error) {
 	return user, nil
 }
 
-// SignInByThirdAccount 第三方账号登录
+// SignInByThirdAccount 第三方账号登录, todo add the analyze flag
 func (s *userService) SignInByThirdAccount(thirdAccount *model.ThirdAccount) (*model.User, *simple.CodeError) {
 	user := s.Get(thirdAccount.UserId.Int64)
 	if user != nil {

@@ -7,7 +7,7 @@ import (
 var Models = []interface{}{
 	&User{}, &UserToken{}, &Tag{}, &Article{}, &ArticleTag{}, &Comment{}, &Favorite{}, &Topic{}, &TopicNode{},
 	&TopicTag{}, &UserLike{}, &Tweet{}, &Message{}, &SysConfig{}, &Project{}, &Link{}, &ThirdAccount{},
-	&UserScore{}, &UserScoreLog{}, &OperateLog{}, &EmailCode{}, &CheckIn{},
+	&UserScore{}, &UserScoreLog{}, &OperateLog{}, &EmailCode{}, &CheckIn{}, &SignupAnalyze{},
 }
 
 type Model struct {
@@ -278,4 +278,10 @@ type CheckIn struct {
 	ConsecutiveDays int   `gorm:"not null;" json:"consecutiveDays" form:"consecutiveDays"`       // 连续签到天数
 	CreateTime      int64 `json:"createTime" form:"createTime"`                                  // 创建时间
 	UpdateTime      int64 `json:"updateTime" form:"updateTime"`                                  // 更新时间
+}
+
+type SignupAnalyze struct {
+	Model
+	UserId int64  `gorm:"not null;unique_index:idx_user_id"` // 用户编号
+	Source string `gorm:"not null;size:32"`                  //来源标识
 }

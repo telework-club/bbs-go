@@ -67,9 +67,22 @@ export const actions = {
 
   async signup(
     context,
-    { captchaId, captchaCode, nickname, username, email, password, rePassword }
+    {
+      captchaId,
+      captchaCode,
+      nickname,
+      username,
+      email,
+      password,
+      rePassword,
+      flag,
+    }
   ) {
-    const ret = await this.$axios.post('/api/login/signup', {
+    let api = '/api/login/signup'
+    if (!flag || flag.length > 0) {
+      api += `?flag=${flag}`
+    }
+    const ret = await this.$axios.post(api, {
       captchaId,
       captchaCode,
       nickname,
