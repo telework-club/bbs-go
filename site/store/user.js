@@ -12,6 +12,15 @@ export const mutations = {
   },
 }
 
+function addSource(api) {
+  // let api = '/api/login/signup'
+  const source = localStorage.getItem('source')
+  if (!source || source.length > 0) {
+    return `${api}?flag=${source}`
+  }
+  return api
+}
+
 export const actions = {
   // 登录成功
   loginSuccess(context, { token, user }) {
@@ -43,7 +52,8 @@ export const actions = {
 
   // github登录
   async signinByGithub(context, { code, state }) {
-    const ret = await this.$axios.get('/api/login/github/callback', {
+    const API = addSource('/api/login/github/callback')
+    const ret = await this.$axios.get(API, {
       params: {
         code,
         state,
@@ -55,7 +65,8 @@ export const actions = {
 
   // qq登录
   async signinByQQ(context, { code, state }) {
-    const ret = await this.$axios.get('/api/login/qq/callback', {
+    const API = addSource('/api/login/qq/callback')
+    const ret = await this.$axios.get(API, {
       params: {
         code,
         state,
@@ -69,13 +80,8 @@ export const actions = {
     context,
     { captchaId, captchaCode, nickname, username, email, password, rePassword }
   ) {
-    let api = '/api/login/signup'
-    const source = localStorage.getItem('source')
-    if (!source || source.length > 0) {
-      api += `?flag=${source}`
-    }
-    console.log(api)
-    const ret = await this.$axios.post(api, {
+    const API = addSource('/api/login/signup')
+    const ret = await this.$axios.post(API, {
       captchaId,
       captchaCode,
       nickname,

@@ -112,13 +112,13 @@ func (c *LoginController) GetGithubAuthorize() *simple.JsonResult {
 func (c *LoginController) GetGithubCallback() *simple.JsonResult {
 	code := c.Ctx.FormValue("code")
 	state := c.Ctx.FormValue("state")
-
+	flag := c.Ctx.URLParam("flag")
 	thirdAccount, err := services.ThirdAccountService.GetOrCreateByGithub(code, state)
 	if err != nil {
 		return simple.JsonErrorMsg(err.Error())
 	}
 
-	user, codeErr := services.UserService.SignInByThirdAccount(thirdAccount)
+	user, codeErr := services.UserService.SignInByThirdAccount(thirdAccount, flag)
 	if codeErr != nil {
 		return simple.JsonError(codeErr)
 	} else {

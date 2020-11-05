@@ -227,7 +227,6 @@ func (s *userService) SignUp(username, email, nickname, password, rePassword str
 			analyze := model.SignupAnalyze{Source: source, UserId: id}
 			simple.DB().Model(&analyze).Create(&analyze)
 		}(user.Id, flag)
-
 	}
 	return user, nil
 }
@@ -255,8 +254,8 @@ func (s *userService) SignIn(username, password string) (*model.User, error) {
 	return user, nil
 }
 
-// SignInByThirdAccount 第三方账号登录, todo add the analyze flag
-func (s *userService) SignInByThirdAccount(thirdAccount *model.ThirdAccount) (*model.User, *simple.CodeError) {
+// SignInByThirdAccount 第三方账号登录
+func (s *userService) SignInByThirdAccount(thirdAccount *model.ThirdAccount, source string) (*model.User, *simple.CodeError) {
 	user := s.Get(thirdAccount.UserId.Int64)
 	if user != nil {
 		if user.Status != constants.StatusOk {
@@ -303,10 +302,17 @@ func (s *userService) SignInByThirdAccount(thirdAccount *model.ThirdAccount) (*m
 		if err := repositories.UserRepository.UpdateColumn(tx, user.Id, "avatar", avatarUrl); err != nil {
 			return err
 		}
+
 		return nil
 	})
 	if err != nil {
 		return nil, simple.FromError(err)
+	}
+	if len(source) > 0 {
+		go func(id int64, source string) {
+			analyze := model.SignupAnalyze{Source: source, UserId: id}
+			simple.DB().Model(&analyze).Create(&analyze)
+		}(user.Id, source)
 	}
 	cache.UserCache.Invalidate(user.Id)
 	return user, nil
