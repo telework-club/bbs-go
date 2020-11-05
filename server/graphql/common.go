@@ -6,6 +6,16 @@ import (
 	"github.com/graphql-go/graphql"
 )
 
+type ContextKey string
+
+const (
+	CtxCommentsType ContextKey = "comments"
+	CtxUsersType    ContextKey = "users"
+	CtxCurrentUser  ContextKey = "current-user"
+	CtxTopicType    string     = "topic-content-type"
+	UserCache       string     = "user-cache"
+)
+
 type RequestOptions struct {
 	Query         string                 `json:"query" url:"query" schema:"query"`
 	Variables     map[string]interface{} `json:"variables" url:"variables" schema:"variables"`

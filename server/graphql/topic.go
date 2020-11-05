@@ -19,15 +19,6 @@ var (
 	ForumSchema *graphql.Schema
 )
 
-type ContextKey string
-
-const (
-	CtxCommentsType ContextKey = "comments"
-	CtxUsersType    ContextKey = "users"
-	CtxTopicType    string     = "topic-content-type"
-	UserCache       string     = "user-cache"
-)
-
 type CommentsMap map[int64]model.Comment
 type UsersMap map[int64]model.User
 type RootType map[string]interface{}

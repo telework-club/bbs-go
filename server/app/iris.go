@@ -22,6 +22,7 @@ import (
 	"bbs-go/config"
 	"bbs-go/controllers/api"
 	graph "bbs-go/graphql"
+	"bbs-go/services"
 
 	"bbs-go/controllers/admin"
 	"bbs-go/middleware"
@@ -109,6 +110,7 @@ func InitIris() {
 	})
 
 	app.Post("/graphql", func(ctx iris.Context) {
+		user := services.UserTokenService.GetCurrent(ctx)
 		var options graph.RequestOptions
 		if err := ctx.ReadJSON(&options); err != nil {
 			ctx.StatusCode(500)
@@ -121,7 +123,7 @@ func InitIris() {
 			RequestString:  options.Query,
 			VariableValues: options.Variables,
 			OperationName:  options.OperationName,
-			Context:        context.Background(),
+			Context:        context.WithValue(context.Background(), graph.CtxCurrentUser, user),
 			RootObject:     root,
 		}
 		result := graphql.Do(params)
